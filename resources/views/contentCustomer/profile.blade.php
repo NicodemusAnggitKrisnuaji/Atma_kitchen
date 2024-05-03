@@ -86,9 +86,6 @@ Profile: {{ Auth::user()->nama }}
                             <button type="submit" class="btn btn-primary">Edit Profile</button>
                         </form>
                     </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-secondary">Change Password</button>
-                    </div>
                 </div>
             </div>
         </div>

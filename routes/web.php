@@ -91,13 +91,8 @@ Route::post('/reset-password', function (Request $request) {
                 : back()->withErrors(['email' => [__($status)]]);
 })->middleware('guest')->name('password.update');
 
-
-// Route::get('forgotPassword', 'LoginController@showForgotPasswordForm')->name('password.request');
-// Route::post('forgotPassword', 'LoginController@sendResetLinkEmail')->name('password.email');
-
 Route::middleware(['auth', 'role:Customer'])->group(function () {
     Route::get('profile', [ProfileController::class, 'index'])->name('profile');
-
     Route::get('OrderHistory', [ProfileController::class, 'history'])->name('OrderHistory');
     Route::get('profile/edit/{id}', [ProfileController::class, 'editProfile'])->name('editProfile');
     Route::put('profile/update/{id}', [ProfileController::class, 'updateProfile'])->name('updateProfile');

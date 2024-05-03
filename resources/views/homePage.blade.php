@@ -55,6 +55,10 @@ Situs Atma Kitchen
     <div class="heading">
         <h2 style="margin-top: 20px;">Pre Order</h2>
         <div class="row">
+            @php
+            $produkTidakTersedia = true;
+            @endphp
+
             @forelse ($produk as $item)
             @if ($item['stock'] == 0 && $item['kategori'] != 'Lain-lain')
             <div class="col-12 col-md-3">
@@ -67,20 +71,22 @@ Situs Atma Kitchen
                     </div>
                 </div>
             </div>
-            @else
+            @php
+            $produkTidakTersedia = false;
+            @endphp
+            @endif
+            @empty
+            @endforelse
+
+            @if ($produkTidakTersedia)
             <div class="col-12">
                 <div class="alert alert-danger">
                     Maaf, tidak ada produk yang tersedia saat ini.
                 </div>
             </div>
-            
             @endif
-            @empty
-            <div class="alert alert-danger">
-                mohon Bersabar yh guys
-            </div>
-            @endforelse
         </div>
+
         <h2 style="margin-top: 20px;">Ready Stock</h2>
         <div class="row">
             @forelse ($produk as $item)

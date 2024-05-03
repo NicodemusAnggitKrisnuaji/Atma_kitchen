@@ -108,6 +108,12 @@ Situs Atma Kitchen
             <br>
 
             <div class="form-group">
+                <label><b>Password</b></label>
+                <input class="form-control" type="password" name="password" id="password" value="" required>
+            </div>
+            <br>
+
+            <div class="form-group">
                 <label><b>Alamat</b></label>
                 <input class="form-control" type="text" name="alamat" id="alamat" value="{{ old('alamat', Auth::user()->alamat) }}" required>
             </div>

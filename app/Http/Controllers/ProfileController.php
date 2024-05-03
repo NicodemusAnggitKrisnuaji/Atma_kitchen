@@ -56,21 +56,30 @@ class ProfileController extends Controller
     {
         $user = User::find($id);
 
+        // Validasi input
         $this->validate($request, [
             'nama' => 'required',
             'email' => 'required',
+            'password',
             'alamat' => 'required',
             'nomor_telepon' => 'required',
-            'tanggal_lahir' => 'required',
+            'tanggal_lahir' => 'required|date',
         ]);
 
-        $user->update([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'alamat' => $request->alamat,
-            'nomor_telepon' => $request->nomor_telepon,
-            'tanggal_lahir' => $request->tanggal_lahir,
-        ]);
+        // Memperbarui data pengguna
+        $user->nama = $request->nama;
+        $user->email = $request->email;
+        $user->alamat = $request->alamat;
+        $user->nomor_telepon = $request->nomor_telepon;
+        $user->tanggal_lahir = $request->tanggal_lahir;
+
+        // Jika password diisi, update password
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+
+        $user->save();
 
         return redirect()->route('profile');
     }
@@ -155,10 +164,10 @@ class ProfileController extends Controller
             $user->password = Hash::make($request->password);
         }
 
-       
+
         $user->save();
 
-      
+
         if (Auth::check()) {
             $role = Auth::user()->role;
 
@@ -200,10 +209,10 @@ class ProfileController extends Controller
             $user->password = Hash::make($request->password);
         }
 
-       
+
         $user->save();
 
-      
+
         if (Auth::check()) {
             $role = Auth::user()->role;
 
@@ -245,10 +254,10 @@ class ProfileController extends Controller
             $user->password = Hash::make($request->password);
         }
 
-       
+
         $user->save();
 
-      
+
         if (Auth::check()) {
             $role = Auth::user()->role;
 
@@ -263,4 +272,3 @@ class ProfileController extends Controller
         }
     }
 }
-
