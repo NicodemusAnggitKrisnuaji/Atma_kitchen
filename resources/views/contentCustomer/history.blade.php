@@ -22,6 +22,34 @@ Profile: {{ Auth::user()->nama }}
         text-decoration: none;
         color: black;
     }
+
+    .search-container {
+        margin-bottom: 20px;
+    }
+
+    .search-container input[type=text] {
+        padding: 10px;
+        margin-top: 8px;
+        font-size: 17px;
+        border-radius: 5px;
+        width: 80%;
+    }
+
+    .search-container button {
+        float: right;
+        padding: 10px 15px;
+        margin-top: 8px;
+        margin-right: 25px;
+        background: #ddd;
+        font-size: 17px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .search-container button:hover {
+        background: #ccc;
+    }
 </style>
 
 <div class="container profile-container">
@@ -51,6 +79,12 @@ Profile: {{ Auth::user()->nama }}
         <div class="col-md-8">
             <div class="box">
                 <h2>History</h2>
+                <div class="search-container">
+                    <form action="{{ route('OrderHistory') }}" method="GET">
+                        <input type="text" placeholder="Search by product name..." name="keyword">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
                 <table class="table table-striped text-center">
                     <tr>
                         <td style="background-color: brown; color: white;">No</td>

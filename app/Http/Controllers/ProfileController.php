@@ -32,18 +32,26 @@ class ProfileController extends Controller
     }
 
 
-    public function history()
+    public function history(Request $request)
     {
         if (Auth::check()) {
             $user = Auth::user();
 
-            // Ambil semua data histori yang terkait dengan pengguna yang login
-            $history = History::where('id_user', $user->id)->get();
+            $query = History::where('id_user', $user->id);
+
+            $keyword = $request->input('keyword');
+
+            if (!empty($keyword)) {
+                $query->where('nama_produk', 'LIKE', "%$keyword%");
+            }
+
+            $history = $query->get();
 
             return view('contentCustomer.history', compact('history'));
         }
         return view('home');
     }
+
 
 
     public function editProfile($id)
