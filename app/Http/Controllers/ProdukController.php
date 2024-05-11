@@ -63,12 +63,11 @@ class ProdukController extends Controller
         $penitip = Penitip::where('id_penitip', $id_penitip)->first();
 
         if (!$penitip) {
-            return redirect()->route('produk')->with(['error' => 'Produk Tidak Ditemukan!']);
+            $storeData['id_penitip'] = null;
+        } else {
+            $storeData['id_penitip'] = $penitip->id_penitip;
         }
-
-        $storeData['id_penitip'] = $penitip->id_penitip;
-
-
+    
         $validate = Validator::make($storeData, [
             'nama_produk' => 'required',
             'id_penitip',

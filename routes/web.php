@@ -14,6 +14,8 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\PembelianBahanBakuController;
 use App\Http\Controllers\PencatatanPengeluaranController;
 use App\Http\Controllers\GajiBonusController;
+use App\Http\Controllers\DetailHampersController;
+use App\Http\Controllers\DetailResepController;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -177,6 +179,20 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('hampers', [HampersController::class, 'index'])->name('hampers');
     Route::put('hampers.update/{id}', [HampersController::class, 'update'])->name('hampers.update');
     Route::delete('hampers.destroy/{id}', [HampersController::class, 'destroy'])->name('hampers.destroy');
+
+    Route::get('detail_hampers.create/{id}', [DetailHampersController::class, 'create'])->name('detail_hampers.create');
+    Route::post('detail_hampers.store/{id}', [DetailHampersController::class, 'store'])->name('detail_hampers.store');
+    Route::get('detail_hampers.edit/{id}', [DetailHampersController::class, 'edit'])->name('detail_hampers.edit');
+    Route::get('detail_hampers/{id}', [DetailHampersController::class, 'index'])->name('detail_hampers');
+    Route::put('detail_hampers.update/{id}', [DetailHampersController::class, 'update'])->name('detail_hampers.update');
+    Route::delete('detail_hampers.destroy/{id}', [DetailHampersController::class, 'destroy'])->name('detail_hampers.destroy');
+
+    Route::get('detail_resep.create/{id}', [DetailResepController::class, 'create'])->name('detail_resep.create');
+    Route::post('detail_resep.store/{id}', [DetailResepController::class, 'store'])->name('detail_resep.store');
+    Route::get('detail_resep.edit/{id}', [DetailResepController::class, 'edit'])->name('detail_resep.edit');
+    Route::get('detail_resep/{id}', [DetailResepController::class, 'index'])->name('detail_resep');
+    Route::put('detail_resep.update/{id}', [DetailResepController::class, 'update'])->name('detail_resep.update');
+    Route::delete('detail_resep.destroy/{id}', [DetailResepController::class, 'destroy'])->name('detail_resep.destroy');
 
     Route::get('searchCus', [SearchCustomerController::class, 'index'])->name('searchCus');
     Route::get('searchCus.show/{id}', [SearchCustomerController::class, 'show'])->name('searchCus.show');

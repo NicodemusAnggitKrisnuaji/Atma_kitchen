@@ -30,10 +30,10 @@
                             <button class="btn btn-outline-secondary" type="submit">Cari</button>
                         </form>
                         @if ($hampers->isEmpty())
-                            <div class="alert alert-danger">
-                                Pencarian tidak ditemukan.
-                            </div>
-                        @else
+                        <div class="alert alert-danger">
+                            Pencarian tidak ditemukan.
+                        </div>
+                                @else
                         <div class="table-responsive p-0">
                             <table class="table table-hover textnowrap">
                                 <thead>
@@ -59,7 +59,8 @@
                                         <td class="text-center">{{ $item->deskripsi }}</td>
                                         <td class="text-center">{{ $item->isi }}</td>
                                         <td class="text-center">
-                                            <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('hampers.destroy', $item->id_hampers) }}" method="POST">
+                                            <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('hampers.destroy', $item->id_hampers) }}" method="POST" style="display: flex;">
+                                                <a href="{{ route('detail_hampers', $item->id_hampers) }}" class="btn btn-sm btn-dark">Detail</a>
                                                 <a href="{{ route('hampers.edit', $item->id_hampers) }}" class="btn btn-sm btn-primary">Edit</a>
                                                 @csrf
                                                 @method('DELETE')

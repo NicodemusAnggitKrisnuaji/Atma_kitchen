@@ -68,6 +68,7 @@
 
                                                 <td class="text-center">
                                                     <form onsubmit="return confirm('Apakah anda yakin ?');" action="{{ route('resep.destroy', $item->id_resep) }}" method="POST">
+                                                    <a href="{{ route('detail_resep', $item->id_resep) }}" class="btn btn-sm btn-dark">Detail</a>
                                                     <a href="{{ route('resep.edit', $item->id_resep) }}" class="btn btn-sm btn-primary">Edit</a>
                                                     @csrf
                                                     @method('DELETE')
