@@ -36,13 +36,11 @@ Profile: {{ Auth::user()->nama }}
                         <p>Nama</p>
                         <p>Alamat</p>
                         <p>Email</p>
-                        <p>Password</p>
                         <p>Tanggal Lahir</p>
                         <p>Nomor Telepon</p>
                     </div>
                     <div class="col-md-1">
                         <p>: </p>
-                        <p>:</p>
                         <p>: </p>
                         <p>: </p>
                         <p>: </p>
@@ -52,7 +50,6 @@ Profile: {{ Auth::user()->nama }}
                         <p>{{ Auth::user()->nama }}</p>
                         <p>{{ Auth::user()->alamat }}</p>
                         <p>{{ Auth::user()->email }}</p>
-                        <p>{{ str_repeat('*', 8) }}</p>
                         <p>{{ Auth::user()->tanggal_lahir }}</p>
                         <p>{{ Auth::user()->nomor_telepon }}</p>
                     </div>

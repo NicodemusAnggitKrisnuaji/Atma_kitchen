@@ -11,17 +11,20 @@ class BahanBakuController extends Controller
 {
     public function index(Request $request)
     {
+        $keyword = $request->input('keyword');
         $query = bahanBaku::query();
-        if ($request->has('search')) {
-            $bahanBaku = bahanBaku::where('nama', 'like', '%' . $request->search . '%')
-                ->orWhere('satuan', 'like', '%' . $request->search . '%')
-                ->orWhere('stock', 'like', '%' . $request->search . '%')
-                ->paginate(5);
-        } else {
-            $bahanBaku = $query->orderBy('id_bahanBaku', 'DESC')->paginate(5);
+        if (!empty($keyword)) {
+            $query->where('nama', 'LIKE', "%$keyword%");
         }
-        return view('viewAdmin.bahanBaku.index', compact('bahanBaku'));
+
+        $bahanBaku = $query->orderBy('id_bahanBaku', 'ASC')->paginate(5);
+
+        if ($bahanBaku->isEmpty()) {
+            return view('viewAdmin.bahanBaku.index', compact('bahanBaku', 'keyword'))->with('error', 'Pencarian Tidak Ditemukan');
+        }
+        return view('viewAdmin.bahanBaku.index', compact('bahanBaku', 'keyword'));
     }
+
 
 
     public function create()

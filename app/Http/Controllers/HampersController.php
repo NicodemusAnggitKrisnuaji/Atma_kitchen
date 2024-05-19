@@ -20,15 +20,15 @@ class HampersController extends Controller
         $keyword = $request->input('keyword');
         $query = Hampers::query();
 
-        if(!empty($kwyword))
+        if(!empty($keyword))
         {
-            $query->where('nama_paketHampers', 'LIKE', "%$keyword%");
+            $query->where('nama_hampers', 'LIKE', "%$keyword%");
         }
 
         $hampers = $query->orderBy('id_hampers', 'ASC')->paginate(5);
         if($hampers->isEmpty())
         {
-            return view('viewAdmin.Hampers.index', compact('hampers', 'keyword'))->with('error', 'Pencarian Tidak Ditemukab');
+            return view('viewAdmin.Hampers.index', compact('hampers', 'keyword'))->with('error', 'Pencarian Tidak Ditemukan');
         }
 
         return view('viewAdmin.Hampers.index', compact('hampers', 'keyword'));

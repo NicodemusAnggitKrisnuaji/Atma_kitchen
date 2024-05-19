@@ -16,6 +16,7 @@ class Detail_hampers extends Model
     protected $fillable = [
         'id_hampers',
         'id_produk',
+        'id_bahanBaku',
         'jumlah',
     ];
 
@@ -25,6 +26,10 @@ class Detail_hampers extends Model
 
     public function hampers() {
         return $this->belongsTo(Produk::class, 'id_hampers');
+    }
+
+    public function bahanBaku() {
+        return $this->belongsTo(bahanBaku::class, 'id_bahanBaku');
     }
 
 }

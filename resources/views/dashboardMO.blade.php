@@ -102,15 +102,25 @@
         <div class="content-wrapper">
             @yield('content')
         </div>
+
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #8B5D5D">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color: white;">Apakah Ingin Logout?</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border: 1px solid;">Close</button>
+                        <a href="{{ route('actionLogout') }}" class="btn btn-sm btn-danger">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- /.content-wrapper -->
     </div>
-    <!-- ./wrapper -->
-    <!-- REQUIRED SCRIPTS -->
-    <!-- jQuery -->
     <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
-    <!-- Bootstrap 4 -->
     <script src="{{ asset('plugins/js/bootstrap.bundle.min.js') }}"></script>
-    <!-- AdminLTE App -->
     <script src="{{ asset('js/adminlte.min.js') }}"></script>
 
 </body>

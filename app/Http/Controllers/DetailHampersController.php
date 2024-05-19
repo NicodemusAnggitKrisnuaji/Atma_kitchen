@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Hampers;
 use App\Models\Detail_hampers;
 use App\Models\Produk;
+use App\Models\bahanBaku;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
@@ -38,7 +39,8 @@ class DetailHampersController extends Controller
     public function create($id)
     {
         $produk = Produk::all();
-        return view('viewAdmin.Detail_hampers.create', compact('id', 'produk'));
+        $bahanBaku = bahanBaku::all();
+        return view('viewAdmin.Detail_hampers.create', compact('id', 'produk', 'bahanBaku'));
     }
     /**
      * store
@@ -49,7 +51,8 @@ class DetailHampersController extends Controller
     public function store(Request $request, $id)
     {
         $validate = Validator::make($request->all(), [
-            'id_produk' => 'required',
+            'id_produk',
+            'id_bahanBaku',
             'jumlah' => 'required',
         ]);
 
@@ -76,8 +79,9 @@ class DetailHampersController extends Controller
     public function edit($id)
     {
         $produk = Produk::all();
+        $bahanBaku = bahanBaku::all();
         $detail = Detail_hampers::where('id_detail', $id)->first();
-        return view('viewAdmin.Detail_hampers.edit', compact('detail', 'produk', 'id'));
+        return view('viewAdmin.Detail_hampers.edit', compact('detail', 'produk', 'id', 'bahanBaku'));
     }
 
     /**
@@ -95,7 +99,8 @@ class DetailHampersController extends Controller
         }
 
         $validate = Validator::make($request->all(), [
-            'id_produk' => 'required',
+            'id_produk',
+            'id_bahanBaku',
             'jumlah' => 'required',
         ]);
 

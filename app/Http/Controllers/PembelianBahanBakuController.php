@@ -67,6 +67,15 @@ class PembelianBahanBakuController extends Controller
             return redirect()->back()->withErrors($validate)->withInput();
         }
 
+        $bahanBaku = BahanBaku::findOrFail($request->id_bahanBaku);
+
+        // Tambahkan jumlah pembelian ke stok bahan baku
+        $bahanBaku->stock += $request->jumlah;
+
+        // Simpan perubahan stok bahan baku
+        $bahanBaku->save();
+
+
         $storeData = $request->all();
 
         try {
@@ -118,6 +127,19 @@ class PembelianBahanBakuController extends Controller
             return redirect()->back()->withErrors($validate)->withInput();
         }
 
+        // Temukan bahan baku terkait
+        $bahanBaku = BahanBaku::findOrFail($request->id_bahanBaku);
+
+        // Hitung perbedaan jumlah pembelian baru dengan jumlah pembelian sebelumnya
+        $perbedaanJumlah = $request->jumlah - $pembelian->jumlah;
+
+        // Tambah atau kurangi stok bahan baku sesuai dengan perbedaan jumlah
+        $bahanBaku->stock += $perbedaanJumlah;
+
+        // Simpan perubahan stok bahan baku
+        $bahanBaku->save();
+
+        // Simpan data pembelian yang diperbarui
         $storeData = $request->all();
 
         try {
@@ -130,6 +152,7 @@ class PembelianBahanBakuController extends Controller
         }
     }
 
+
     /**
      * destroy
      * 
@@ -141,7 +164,18 @@ class PembelianBahanBakuController extends Controller
         $pembelian = PembelianBahanBaku::find($id);
 
         if ($pembelian) {
+            // Dapatkan objek bahan baku terkait
+            $bahanBaku = BahanBaku::findOrFail($pembelian->id_bahanBaku);
+
+            // Kurangi jumlah pembelian dari stok bahan baku
+            $bahanBaku->stock -= $pembelian->jumlah;
+
+            // Simpan perubahan stok bahan baku
+            $bahanBaku->save();
+
+            // Hapus pembelian
             $pembelian->delete();
+
             return redirect()->route('pembelian')->with(['success' => 'Data Berhasil Dihapus!']);
         } else {
             return redirect()->route('pembelian')->with(['error' => 'Terjadi Kesalahan Saat Menghapus Data!']);

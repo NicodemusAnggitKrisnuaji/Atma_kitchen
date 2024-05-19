@@ -42,6 +42,20 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12">
+                                    <label class="font-weightbold">Nama Bahan Baku Hampers</label>
+                                    <select name="id_bahanBaku" class="form-control @error('id_bahanBaku') is-invalid @enderror">
+                                        <option value="">Pilih Nama bahanBaku Hampers</option>
+                                        @foreach($bahanBaku as $product)
+                                        <option value="{{ $product->id_bahanBaku }}">{{ $product->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('id_bahanBaku')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
                                     <label class="font-weightbold">Jumlah</label>
                                     <input type="number" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah" value="{{ old('jumlah') }}" placeholder="Masukkan Jumlah">
                                     @error('jumlah')
