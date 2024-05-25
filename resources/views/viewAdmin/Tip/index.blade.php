@@ -41,6 +41,7 @@
                                         <th class="text-center">Total Pembayaran</th>
                                         <th class="text-center">Jumlah Yang Dibayar</th>
                                         <th class="text-center">Tip</th>
+                                        <th class="text-center">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -57,6 +58,9 @@
                                         </td>
                                         <td class="text-center">
                                             {{ $item->hasil_tip }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ $item->pemesanan->status }}
                                         </td>
                                     </tr>
                                     @empty

@@ -65,6 +65,18 @@
                                     </div>
                                     @enderror
                                 </div>
+                                <div class="form-group col-md-6">
+                                    <label class="font-weight-bold">Status</label>
+                                    <select name="status" class="form-control @error('status') is-invalid @enderror">
+                                    <option value="pembayaran valid" {{ $p->status == 'sudah dibayar' ? 'selected' : '' }} disabled>Sudah Dibayar</option>
+                                    <option value="pembayaran valid" {{ $p->status == 'pembayaran valid' ? 'selected' : '' }}>Pembayaran Valid</option>
+                                    </select>
+                                    @error('id_pemesanan')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-md btn-primary">Hitung Tip</button>
                         </form>

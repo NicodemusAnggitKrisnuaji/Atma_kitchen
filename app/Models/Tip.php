@@ -16,7 +16,7 @@ class Tip extends Model
         'id_pemesanan',
         'total',
         'jumlah',
-        'hasil_tip'
+        'hasil_tip',
     ];
 
     public function pemesanan() {

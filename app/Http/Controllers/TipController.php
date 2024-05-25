@@ -51,6 +51,9 @@ class TipController extends Controller
         $total = $request->total;
         $jumlah = $request->jumlah;
         $tip = $jumlah - $total;
+        $pemesanan->status= $request->status;
+
+        $pemesanan->save();
 
         // Pastikan tip tidak negatif
         if ($tip < 0) {
