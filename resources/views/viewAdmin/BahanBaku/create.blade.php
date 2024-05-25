@@ -6,7 +6,6 @@
             <div class="col-sm-6">
                 <h1 class="m-0">Tambah Bahan Baku</h1>
             </div>
-            <!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">
@@ -15,14 +14,9 @@
                     <li class="breadcrumb-item active">Create</li>
                 </ol>
             </div>
-            <!-- /.col -->
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 </div>
-<!-- /.content-header -->
-<!-- Main content -->
 <div class="content">
     <div class="container-fluid">
         <div class="row">
@@ -62,14 +56,9 @@
                             <button type="submit" class="btn btn-md btn-primary">Simpan</button>
                         </form>
                     </div>
-                    <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
             </div>
-            <!-- /.col-md-6 -->
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 </div>
 @endsection

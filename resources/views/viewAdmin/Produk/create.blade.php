@@ -98,14 +98,9 @@
                                 <button type="submit" class="btn btn-md btn-primary">Simpan</button>
                             </form>
                         </div>
-                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card -->
                 </div>
-                <!-- /.col-md-6 -->
             </div>
-            <!-- /.row -->
         </div>
-        <!-- /.container-fluid -->
     </div>
     @endsection

@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\DetailProdukController;
+use App\Http\Controllers\PemesananController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
@@ -39,6 +43,16 @@ use Illuminate\Support\Str;
 
 Route::get('/', [HomePageController::class, 'index'])->name('homePage');
 Route::get('home', [HomePageController::class, 'index'])->name('home');
+
+Route::get('catalog', [CatalogController::class, 'index'])->name('catalog');
+Route::get('detailCake', [DetailProdukController::class, 'detailCake'])->name('detailCake');
+Route::get('detailRoti', [DetailProdukController::class, 'detailRoti'])->name('detailRoti');
+Route::get('detailMinuman', [DetailProdukController::class, 'detailMinuman'])->name('detailMinuman');
+Route::get('detailTitipan', [DetailProdukController::class, 'detailTitipan'])->name('detailTitipan');
+Route::get('detailHampers', [DetailProdukController::class, 'detailHampers'])->name('detailHampers');
+
+Route::get('/pemesanan/{id}', [PemesananController::class, 'show'])->name('pemesanan');
+Route::get('/pemesanan/{id}/addToCart', [PemesananController::class, 'addToCart'])->name('produk.addToCart');
 
 Route::get('login', [LoginController::class, 'page'])->name('login');
 Route::post('actionLogin', [LoginController::class, 'actionLogin'])->name('actionLogin');
@@ -99,6 +113,12 @@ Route::middleware(['auth', 'role:Customer'])->group(function () {
     Route::get('profile/edit/{id}', [ProfileController::class, 'editProfile'])->name('editProfile');
     Route::put('profile/update/{id}', [ProfileController::class, 'updateProfile'])->name('updateProfile');
     Route::get('homeCustomer', [HomePageController::class, 'homeCustomer'])->name('homeCustomer');
+
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('cart/add', [CartController::class, 'add'])->name('cart.add');
+    Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+
 });
 
 Route::middleware(['auth', 'role:Owner'])->group(function () {

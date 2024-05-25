@@ -33,7 +33,7 @@
                         <div class="alert alert-danger">
                             Pencarian tidak ditemukan.
                         </div>
-                                @else
+                        @else
                         <div class="table-responsive p-0">
                             <table class="table table-hover textnowrap">
                                 <thead>
