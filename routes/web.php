@@ -1,6 +1,11 @@
 <?php
 
 use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\DetailCakeController;
+use App\Http\Controllers\DetailRotiController;
+use App\Http\Controllers\DetailMinumanController;
+use App\Http\Controllers\DetailTitipanController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
@@ -16,6 +21,8 @@ use App\Http\Controllers\PencatatanPengeluaranController;
 use App\Http\Controllers\GajiBonusController;
 use App\Http\Controllers\DetailHampersController;
 use App\Http\Controllers\DetailResepController;
+use App\Http\Controllers\PengirimanController;
+use App\Http\Controllers\TipController;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -39,6 +46,12 @@ use Illuminate\Support\Str;
 
 Route::get('/', [HomePageController::class, 'index'])->name('homePage');
 Route::get('home', [HomePageController::class, 'index'])->name('home');
+
+Route::get('catalog', [CatalogController::class, 'index'])->name('catalog');
+Route::get('detailCake', [DetailCakeController::class, 'index'])->name('detailCake');
+Route::get('detailRoti', [DetailRotiController::class, 'index'])->name('detailRoti');
+Route::get('detailMinuman', [DetailMinumanController::class, 'index'])->name('detailMinuman');
+Route::get('detailTitipan', [DetailTitipanController::class, 'index'])->name('detailTitipan');
 
 Route::get('login', [LoginController::class, 'page'])->name('login');
 Route::post('actionLogin', [LoginController::class, 'actionLogin'])->name('actionLogin');
@@ -196,6 +209,17 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('searchCus', [SearchCustomerController::class, 'index'])->name('searchCus');
     Route::get('searchCus.show/{id}', [SearchCustomerController::class, 'show'])->name('searchCus.show');
+
+    Route::get('pengiriman.create', [PengirimanController::class, 'create'])->name('pengiriman.create');
+    Route::post('pengiriman.store', [PengirimanController::class, 'store'])->name('pengiriman.store');
+    Route::get('pengiriman.edit/{id}', [PengirimanController::class, 'edit'])->name('pengiriman.edit');
+    Route::get('pengiriman', [PengirimanController::class, 'index'])->name('pengiriman');
+    Route::put('pengiriman.update/{id}', [PengirimanController::class, 'update'])->name('pengiriman.update');
+    Route::delete('pengiriman.destroy/{id}', [PengirimanController::class, 'destroy'])->name('pengiriman.destroy');
+
+    Route::get('tip.create', [TipController::class, 'create'])->name('tip.create');
+    Route::post('tip.store', [TipController::class, 'store'])->name('tip.store');
+    Route::get('tip', [TipController::class, 'index'])->name('tip');
 });
 
 Route::get('logout', [LoginController::class, 'actionLogout'])->name('actionLogout')->middleware('auth');

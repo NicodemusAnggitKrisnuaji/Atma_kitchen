@@ -135,7 +135,7 @@
                         <a class="nav-link" href="{{ url('home') }}" style="font-size: 20px;">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" style="font-size: 20px;">Catalog</a>
+                        <a class="nav-link" href="{{ url('catalog') }}" style="font-size: 20px;">Catalog</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" style="font-size: 20px;">Delivery</a>
@@ -192,6 +192,7 @@
                 </div>
             </div>
         </div>
+
 
     </div>
 

@@ -67,7 +67,7 @@ Situs Atma Kitchen
                     <div class="card-body col-12">
                         <h3>{{ $item['nama_produk'] }}</h3>
                         <p class="text-muted">Rp. {{ number_format($item['harga_produk'], 0, ',', '.') }}</p>
-                        <a href="#" class="btn btn-primary btn-sm btn-block mb-2">Pesan</a>
+                        <a href="#" class="btn btn-primary btn-sm btn-block mb-2">Add to Cart</a>
                     </div>
                 </div>
             </div>
@@ -97,7 +97,7 @@ Situs Atma Kitchen
                     <div class="card-body col-12">
                         <h3>{{ $item['nama_produk'] }}</h3>
                         <p class="text-muted">Rp. {{ number_format($item['harga_produk'], 0, ',', '.') }}</p>
-                        <a href="#" class="btn btn-primary btn-sm btn-block mb-2">Pesan</a>
+                        <a href="#" class="btn btn-primary btn-sm btn-block mb-2">Add to Cart</a>
                     </div>
                 </div>
             </div>
@@ -109,6 +109,4 @@ Situs Atma Kitchen
             @endforelse
         </div>
     </div>
-
-
-    @endsection
+@endsection
