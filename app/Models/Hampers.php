@@ -19,6 +19,7 @@ class Hampers extends Model
         'deskripsi',
         'isi',
         'stock',
+        'quota',
         'image',
     ];
 }

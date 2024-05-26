@@ -87,6 +87,12 @@
                                 <p> Pengeluaran</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ url('orders') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-comments-dollar"></i>
+                                <p> Konfirmasi Pesanan</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->

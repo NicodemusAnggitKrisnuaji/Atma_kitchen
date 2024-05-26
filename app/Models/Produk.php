@@ -20,6 +20,7 @@ class Produk extends Model
         'stock',
         'deskripsi_produk',
         'kategori',
+        'quota',
         'image'
     ];
 

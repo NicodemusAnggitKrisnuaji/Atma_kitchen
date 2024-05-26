@@ -47,6 +47,7 @@ class RegisterController extends Controller
             'role' => 'Customer',
             'remember_token' => null,
             'saldo' => '0',
+            'poin' => '0',
         ]);
 
         return redirect('login'); // Correct redirect route

@@ -27,53 +27,11 @@ class HomePageController extends Controller
 
     }
 
-    // public function liatProduk($id)
-    // {
-    //     $produk = Produk::find($id);
+    public function productview($id)
+    {
 
-    //     return view('contentCustomer.liatMobil', compact('produk'));
-    // }
+        $produk = Produk::find($id);
+        return view('productview', compact('produk'));
 
-    // public function liatHampers($id)
-    // {
-    //     $mobil = Mobil::find($id);
-
-    //     return view('contentCustomer.liatMobil', compact('mobil'));
-    // }
-
-
-    // public function getData($id)
-    // {
-
-    //     if (Auth::check()) {
-    //         $user = Auth::user()->id;
-    //         $userLogin = User::find($user);
-
-    //         $mobil = Mobil::find($id);
-
-    //         return view('contentCustomer.pemesanan', compact('userLogin', 'mobil'));
-    //     }
-    // }
-
-    // public function destroy($id)
-    // {
-    //     $transaksi = Transaksi::find($id);
-
-    //     if ($transaksi) {
-    //         $mobil = $transaksi->mobil;
-
-    //         $mobil->stok += 1;
-    //         $mobil->save();
-    //         $transaksi->delete();
-    //     }
-
-    //     return redirect('home');
-    // }
-
-    // public function trackMobil()
-    // {
-    //     $transaksi = Transaksi::latest()->get();
-
-    //     return view('contentCustomer.trackMobil', compact('transaksi'));
-    // }
+    }
 }

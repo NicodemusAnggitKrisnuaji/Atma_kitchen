@@ -16,6 +16,12 @@ use App\Http\Controllers\PencatatanPengeluaranController;
 use App\Http\Controllers\GajiBonusController;
 use App\Http\Controllers\DetailHampersController;
 use App\Http\Controllers\DetailResepController;
+use App\Http\Controllers\PemesananController;
+use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\DetailProdukController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\TipController;
+use App\Http\Controllers\PengirimanController;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -43,9 +49,18 @@ Route::get('home', [HomePageController::class, 'index'])->name('home');
 Route::get('login', [LoginController::class, 'page'])->name('login');
 Route::post('actionLogin', [LoginController::class, 'actionLogin'])->name('actionLogin');
 
-
 Route::get('register', [RegisterController::class, 'register'])->name('register');
 Route::post('actionRegister', [RegisterController::class, 'actionRegister'])->name('actionRegister');
+
+Route::get('catalog', [CatalogController::class, 'index'])->name('catalog');
+Route::get('detailCake', [DetailProdukController::class, 'detailCake'])->name('detailCake');
+Route::get('detailRoti', [DetailProdukController::class, 'detailRoti'])->name('detailRoti');
+Route::get('detailMinuman', [DetailProdukController::class, 'detailMinuman'])->name('detailMinuman');
+Route::get('detailTitipan', [DetailProdukController::class, 'detailTitipan'])->name('detailTitipan');
+Route::get('detailHampers', [DetailProdukController::class, 'detailHampers'])->name('detailHampers');
+
+Route::get('/pemesanan/{id}', [PemesananController::class, 'show'])->name('pemesanan');
+Route::get('/pemesanan/{id}/addToCart', [PemesananController::class, 'addToCart'])->name('produk.addToCart');
 
 Route::get('/forgot-password', function () {
     return view('contentCustomer.forgot-password');
@@ -57,11 +72,10 @@ Route::post('/forgot-password', function (Request $request) {
     $status = Password::sendResetLink(
         $request->only('email')
     );
- 
+
     return $status === Password::RESET_LINK_SENT
-                ? back()->with(['status' => __($status)])
-                : back()->withErrors(['email' => __($status)]);
-  
+        ? back()->with(['status' => __($status)])
+        : back()->withErrors(['email' => __($status)]);
 })->middleware('guest')->name('password.email');
 
 Route::get('/reset-password/{token}', function (string $token) {
@@ -74,23 +88,23 @@ Route::post('/reset-password', function (Request $request) {
         'email' => 'required|email',
         'password' => 'required|min:8|confirmed',
     ]);
- 
+
     $status = Password::reset(
         $request->only('email', 'password', 'password_confirmation', 'token'),
         function (User $user, string $password) {
             $user->forceFill([
                 'password' => Hash::make($password)
             ])->setRememberToken(Str::random(60));
- 
+
             $user->save();
- 
+
             event(new PasswordReset($user));
         }
     );
- 
+
     return $status === Password::PASSWORD_RESET
-                ? redirect()->route('login')->with('status', __($status))
-                : back()->withErrors(['email' => [__($status)]]);
+        ? redirect()->route('login')->with('status', __($status))
+        : back()->withErrors(['email' => [__($status)]]);
 })->middleware('guest')->name('password.update');
 
 Route::middleware(['auth', 'role:Customer'])->group(function () {
@@ -98,7 +112,15 @@ Route::middleware(['auth', 'role:Customer'])->group(function () {
     Route::get('OrderHistory', [ProfileController::class, 'history'])->name('OrderHistory');
     Route::get('profile/edit/{id}', [ProfileController::class, 'editProfile'])->name('editProfile');
     Route::put('profile/update/{id}', [ProfileController::class, 'updateProfile'])->name('updateProfile');
+
     Route::get('homeCustomer', [HomePageController::class, 'homeCustomer'])->name('homeCustomer');
+    Route::get('productview/{id}', [HomePageController::class, 'productview'])->name('productview');
+
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('cart.add', [PemesananController::class, 'addToCart'])->name('cart.add');
+
+    Route::get('pembayaran', [CartController::class, 'tampilkanPesananBelumDibayar'])->name('pembayaran');
+    Route::post('butki/{id}', [CartController::class, 'kirimBuktiPembayaran'])->name('bukti');
 });
 
 Route::middleware(['auth', 'role:Owner'])->group(function () {
@@ -131,7 +153,7 @@ Route::middleware(['auth', 'role:MO'])->group(function () {
     Route::put('penitip.update/{id}', [PenitipController::class, 'update'])->name('penitip.update');
     Route::delete('penitip.destroy/{id}', [PenitipController::class, 'destroy'])->name('penitip.destroy');
 
-    
+
     Route::get('pembelian.create', [PembelianBahanBakuController::class, 'create'])->name('pembelian.create');
     Route::post('pembelian.store', [PembelianBahanBakuController::class, 'store'])->name('pembelian.store');
     Route::get('pembelian.edit/{id}', [PembelianBahanBakuController::class, 'edit'])->name('pembelian.edit');
@@ -145,6 +167,10 @@ Route::middleware(['auth', 'role:MO'])->group(function () {
     Route::get('pencatatan', [PencatatanPengeluaranController::class, 'index'])->name('pencatatan');
     Route::put('pencatatan.update/{id}', [PencatatanPengeluaranController::class, 'update'])->name('pencatatan.update');
     Route::delete('pencatatan.destroy/{id}', [PencatatanPengeluaranController::class, 'destroy'])->name('pencatatan.destroy');
+
+    Route::get('/orders', [PemesananController::class, 'index'])->name('orders.index');
+    Route::put('/orders/{id}', [PemesananController::class, 'update'])->name('orders.update');
+    Route::get('/orders/material-list', [PemesananController::class, 'showMaterialList'])->name('orders.material-list');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -196,6 +222,17 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('searchCus', [SearchCustomerController::class, 'index'])->name('searchCus');
     Route::get('searchCus.show/{id}', [SearchCustomerController::class, 'show'])->name('searchCus.show');
+
+    Route::get('pengiriman.create', [PengirimanController::class, 'create'])->name('pengiriman.create');
+    Route::post('pengiriman.store', [PengirimanController::class, 'store'])->name('pengiriman.store');
+    Route::get('pengiriman.edit/{id}', [PengirimanController::class, 'edit'])->name('pengiriman.edit');
+    Route::get('pengiriman', [PengirimanController::class, 'index'])->name('pengiriman');
+    Route::put('pengiriman.update/{id}', [PengirimanController::class, 'update'])->name('pengiriman.update');
+    Route::delete('pengiriman.destroy/{id}', [PengirimanController::class, 'destroy'])->name('pengiriman.destroy');
+
+    Route::get('tip.create', [TipController::class, 'create'])->name('tip.create');
+    Route::post('tip.store', [TipController::class, 'store'])->name('tip.store');
+    Route::get('tip', [TipController::class, 'index'])->name('tip');
 });
 
 Route::get('logout', [LoginController::class, 'actionLogout'])->name('actionLogout')->middleware('auth');

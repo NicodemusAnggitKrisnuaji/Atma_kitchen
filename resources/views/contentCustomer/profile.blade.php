@@ -31,7 +31,7 @@ Profile: {{ Auth::user()->nama }}
         <div class="col-md-3">
             <div class="box">
                 <h2><strong>Hi {{ Auth::user()->nama }}</strong></h2>
-                <p><strong>My poin: </strong> 100</p>
+                <p><strong>My poin: </strong> {{ Auth::user()->poin }}</p>
                 <a href="{{ url('OrderHistory') }}">
                     <div class="box">
                         <p style="margin-bottom: -1px;">Order History</p>
@@ -64,7 +64,7 @@ Profile: {{ Auth::user()->nama }}
                     </div>
                     <div class="col-md-1">
                         <p>: </p>
-                        <p>:</p>
+                        <p>: </p>
                         <p>: </p>
                         <p>: </p>
                         <p>: </p>

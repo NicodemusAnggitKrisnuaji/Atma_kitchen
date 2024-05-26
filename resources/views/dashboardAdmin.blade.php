@@ -89,6 +89,18 @@
                                 <p> Customer</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ url('pengiriman') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-people-arrows"></i>
+                                <p> Input Jarak Pengiriman</p>
+                            </a>
+                        </li> 
+                        <li class="nav-item">
+                            <a href="{{ url('tip') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <p> Konfirmasi Pembayaran</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>

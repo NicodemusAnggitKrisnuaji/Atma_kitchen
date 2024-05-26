@@ -20,23 +20,23 @@ class ProdukController extends Controller
     {
         $keyword = $request->input('keyword');
         $query = Produk::query();
-    
+
         if (!empty($keyword)) {
-            $query->where(function($query) use ($keyword) {
+            $query->where(function ($query) use ($keyword) {
                 $query->where('nama_produk', 'LIKE', "%$keyword%")
-                       ->orWhere('harga_produk', 'LIKE', "%$keyword%")
-                      ->orWhere('stock', 'LIKE', "%$keyword%")
-                      ->orWhere('kategori', 'LIKE', "%$keyword%");
+                    ->orWhere('harga_produk', 'LIKE', "%$keyword%")
+                    ->orWhere('stock', 'LIKE', "%$keyword%")
+                    ->orWhere('kategori', 'LIKE', "%$keyword%");
             });
         }
-    
+
         // Mengganti pengurutan default 'latest()' dengan 'orderBy()'
         $produk = $query->orderBy('id_produk', 'ASC')->paginate(5);
-    
+
         if ($produk->isEmpty()) {
             return view('viewAdmin.Produk.index', compact('produk', 'keyword'))->with('error', 'Pencarian Tidak Ditemukan.');
         }
-    
+
         return view('viewAdmin.Produk.index', compact('produk', 'keyword'));
     }
 
@@ -67,7 +67,7 @@ class ProdukController extends Controller
         } else {
             $storeData['id_penitip'] = $penitip->id_penitip;
         }
-    
+
         $validate = Validator::make($storeData, [
             'nama_produk' => 'required',
             'id_penitip',
@@ -78,20 +78,19 @@ class ProdukController extends Controller
             'image' => 'required'
         ]);
 
-        if($validate->fails())
-        {
+        if ($validate->fails()) {
             return redirect()->back()->withErrors($validate)->withInput();
         }
 
-        if($request->hasfile('image'))
-        {
+        if ($request->hasfile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('fotoKue'), $imageName);
             $storeData['image'] = $imageName;
         }
+        $storeData['quota'] = 10;
 
-        try{
+        try {
             Produk::create($storeData);
             return redirect()->route('produk')->with(['success' => 'Data Berhasil Disimpan']);
         } catch (ModelNotFoundException $e) {
@@ -100,6 +99,29 @@ class ProdukController extends Controller
             return redirect()->route('produk')->with(['error' => 'Terjadi Kesalahan Saat Mengubah Data!']);
         }
     }
+
+    // app/Http/Controllers/ProdukController.php
+    public function placeOrder(Request $request, $id_produk)
+    {
+        $produk = Produk::find($id_produk);
+
+        if (!$produk) {
+            return redirect()->route('produk.index')->with(['error' => 'Produk tidak ditemukan']);
+        }
+
+        if ($produk->quota <= 0) {
+            return redirect()->back()->withErrors(['message' => 'Produk ini sudah mencapai batas quota hari ini.']);
+        }
+
+        // Decrement the quota
+        $produk->quota -= 1;
+        $produk->save();
+
+        // Process the order...
+
+        return redirect()->route('produk.index')->with(['success' => 'Pesanan berhasil']);
+    }
+
 
     /**
      * edit
@@ -125,8 +147,7 @@ class ProdukController extends Controller
     {
         $produk = Produk::find($id);
 
-        if(!$produk)
-        {
+        if (!$produk) {
             return redirect()->route('produk.index')->with(['error' => 'Produk Tidak Ditemukan']);
         }
 
@@ -136,29 +157,25 @@ class ProdukController extends Controller
             'stock' => 'required',
             'deskripsi_produk' => 'required',
             'kategori' => 'required',
-    
+
         ]);
 
-        if($validate->fails())
-        {
+        if ($validate->fails()) {
             return redirect()->back()->withErrors($validate)->withInput();
         }
 
         $storeData = $request->all();
 
-        if ($request->hasfile('image'))
-        {
-            
+        if ($request->hasfile('image')) {
+
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('fotoKue'), $imageName);
             $storeData['image'] = $imageName;
 
-            if(file_exists(public_path('fotoKue/'. $produk->image)))
-            {
-                unlink(public_path('fotoKue/'. $produk->image));
+            if (file_exists(public_path('fotoKue/' . $produk->image))) {
+                unlink(public_path('fotoKue/' . $produk->image));
             }
-
         }
 
         try {
@@ -181,7 +198,7 @@ class ProdukController extends Controller
     {
         $produk = Produk::find($id);
 
-        if($produk) {
+        if ($produk) {
             $produk->delete();
             return redirect()->route('produk')->with(['success' => 'Data Berhasil Dihapus!']);
         } else {
@@ -189,4 +206,3 @@ class ProdukController extends Controller
         }
     }
 }
-

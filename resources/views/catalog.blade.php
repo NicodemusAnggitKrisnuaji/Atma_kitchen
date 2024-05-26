@@ -20,38 +20,18 @@ Situs Atma Kitchen
         margin-left: 140px;
 
     }
+
+    .card {
+        border-color: white;
+    }
 </style>
+
 <div class="main">
-    <div>
-        <img src="{{ asset('Img/tes.jpg') }}" class="img-fluid large-image" alt="Cafe">
+    <div class="d-flex justify-content-center" style="margin-top: 100px;">
+        <h1>Product</h1>
     </div>
 
-    <div class="d-flex justify-content-center">
-        <img src="{{ asset('Img/logo.png') }}" class="img-fluid" alt="Cafe" style="max-width: 200px;">
-    </div>
-
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-7">
-                <img src="{{ asset('Img/gambar1.jpg') }}" class="img-fluid" alt="Cafe" style="max-width: 500px;">
-            </div>
-            <div class="col-md-4">
-                <div class="d-flex justify-content-center">
-                    <h1>Tentang Kami</h1>
-                </div>
-                <div class="text-center" style="font-size: 24px;">
-                    <p>Atma Kitchen adalah sebuah usaha baru di bidang kuliner, yang dimiliki oleh Bu Margareth Atma Negara, seorang selebgram yang sangat
-                        suka mencoba makanan yang sedang hits dimana menjual aneka kue premium, dan akan segera dibuka di Yogyakarta.</p>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <div class="heading" style="margin-top: 30px;">
-        <div class="d-flex justify content center">
-            <h2>Produk</h2>
-        </div>
+    <div class="heading">
         <div class="row">
             <div class="col-12 col-md-3">
                 <div class="card mb-4">

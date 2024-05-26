@@ -135,14 +135,14 @@
                         <a class="nav-link" href="{{ url('home') }}" style="font-size: 20px;">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" style="font-size: 20px;">Catalog</a>
+                        <a class="nav-link" href="{{ url('catalog') }}" style="font-size: 20px;">Catalog</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" style="font-size: 20px;">Delivery</a>
                     </li>
                 </ul>
                 <div class="nav-icons">
-                    <a href="#" class="icon">
+                    <a href="{{ Auth::check() ? url('cart') : url('login') }}" class="icon">
                         <div class="rounded">
                             <span style="color: black;">Cart</span>
                             <i class="fas fa-shopping-cart"></i>
