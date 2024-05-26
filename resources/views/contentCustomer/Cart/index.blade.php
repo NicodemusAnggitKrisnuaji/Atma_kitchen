@@ -70,8 +70,9 @@
                                 <form action="{{ url('cart.add') }}" method="POST" class="d-inline-block">
                                     @csrf
                                     <input type="hidden" name="id_cart" value="{{ $cartItem->id_pemesanan }}">
-                                    <input type="text" name="quantity" value="{{ $cartItem->jumlah }}">
-                                    <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                                    <div class="d-flex align-items-center">
+                                        <span>{{ $cartItem->jumlah }}</span>
+                                    </div>
                                 </form>
                             </div>
                         </td>
@@ -83,7 +84,13 @@
                             @else
                             terdapat kesalahan
                             @endif
-
+                        </td>
+                        <td>
+                            <form action="{{ route('cart.destroy', ['id' => $cartItem->id_cart]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-link" style="padding: 0;"><i class="fa-solid fa-trash-can text-black"></i></button>
+                            </form>
                         </td>
                     </tr>
                     @endforeach
@@ -149,19 +156,98 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <p>Order Subtotal:</p>
-                        <p>Rp {{ number_format($cartItems->sum(function($cartItem) {
-                            return $cartItem->produk ? $cartItem->produk->harga * $cartItem->quantity : 0;
+                        <p class="h5 ms-2">Rp {{ number_format($cartItems->sum(function($cartItem) {
+                            if ($cartItem->produk) {
+                                return $cartItem->produk->harga_produk * $cartItem->jumlah;
+                            } elseif ($cartItem->hampers) {
+                                return $cartItem->hampers->harga * $cartItem->jumlah;
+                            } else {
+                                return 0;
+                            }
                         }), 0, ',', '.') }}</p>
                     </div>
                     <div class="d-flex justify-content-between">
                         <p>Delivery Fee:</p>
                         <p>Rp 50.000</p>
                     </div>
-                    <div class="d-flex justify-content-between border-bottom">
+                    @php
+                        $points = 0;
+                        $total = $cartItems->sum(function($cartItem) {
+                            if ($cartItem->produk) {
+                                return $cartItem->produk->harga_produk * $cartItem->jumlah;
+                            } elseif ($cartItem->hampers) {
+                                return $cartItem->hampers->harga * $cartItem->jumlah;
+                            } else {
+                                return 0;
+                            }
+                        }) + 50000;
+
+                        if ($total >= 1000000) {
+                            $points += 200;
+                        } elseif ($total >= 500000) {
+                            $points += 75;
+                        } elseif ($total >= 100000) {
+                            $points += 15;
+                        } elseif ($total >= 10000) {
+                            $points += 1;
+                        }
+
+                        $today = \Carbon\Carbon::today();
+                        $customer = \Auth::user();
+                        $birthday = \Carbon\Carbon::parse($customer->tanggal_lahir)->setYear($today->year);
+                        $birthdayStart = $birthday->copy()->subDays(3);
+                        $birthdayEnd = $birthday->copy()->addDays(3);
+
+                        if ($today->between($birthdayStart, $birthdayEnd)) {
+                            $points *= 2;
+                        }
+                    @endphp
+                    <div class="d-flex justify-content-between">
                         <p><strong>Total:</strong></p>
                         <p><strong>Rp {{ number_format($cartItems->sum(function($cartItem) {
-                            return $cartItem->produk ? $cartItem->produk->harga * $cartItem->quantity : 0;
+                            if ($cartItem->produk) {
+                                return $cartItem->produk->harga_produk * $cartItem->jumlah;
+                            } elseif ($cartItem->hampers) {
+                                return $cartItem->hampers->harga * $cartItem->jumlah;
+                            } else {
+                                return 0;
+                            }
                         }) + 50000, 0, ',', '.') }}</strong></p>
+                    </div>
+                    <div class="d-flex justify-content-between border-bottom">
+                        <p>Point Yang Didapat:</p>
+                        <p>{{ $points }}</p>
+                    </div>
+                </div>
+                <div class="card-header">
+                    Poin Payment
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <p>Poin Yang Dimiliki Saat Ini:</p>
+                        <p>{{ Auth::user()->poin }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <p>Tukar Poin:</p>
+                        <div>
+                            <input type="number" name="poin_tukar" id="poin_tukar" class="form-control" value="{{ Auth::user()->poin }}" min="0" required style="width: 100px; height: 30px;" oninput="updateTotal(this.value)">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <p>Total Setelah Dipotong Poin:</p>
+                        @php
+                            $total = $cartItems->sum(function($cartItem) {
+                                if ($cartItem->produk) {
+                                    return $cartItem->produk->harga_produk * $cartItem->jumlah;
+                                } elseif ($cartItem->hampers) {
+                                    return $cartItem->hampers->harga * $cartItem->jumlah;
+                                } else {
+                                    return 0;
+                                }
+                            }) + 50000; // Ganti 50000 dengan biaya pengiriman jika sesuai
+                            $totalSetelahPotong = $total; // Inisialisasi nilai total setelah dipotong
+                        @endphp
+                        <p id="totalSetelahPotong">Rp {{ number_format($totalSetelahPotong, 0, ',', '.') }}</p>
                     </div>
                 </div>
                 <div class="mt-4 text-center">
@@ -213,6 +299,14 @@
         pickupOption.addEventListener('change', disableOtherOption);
         pickupOption.addEventListener('change', enableOtherOption);
     });
+
+    function updateTotal(poinTukar) {
+        poinTukar = parseInt(poinTukar) || 0;
+        var total = <?php echo $total; ?>;
+        var totalSetelahPotong = total - (poinTukar * 100);
+        totalSetelahPotong = Math.max(0, totalSetelahPotong); // Pastikan total tidak kurang dari 0
+        document.getElementById('totalSetelahPotong').innerText = "Rp " + totalSetelahPotong.toLocaleString();
+    }
 </script>
 
 @endsection

@@ -118,6 +118,7 @@ Route::middleware(['auth', 'role:Customer'])->group(function () {
 
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('cart.add', [PemesananController::class, 'addToCart'])->name('cart.add');
+    Route::delete('cart.destroy/{id}', [CartController:: class, 'destroy'])->name('cart.destroy');
 
     Route::get('pembayaran', [CartController::class, 'tampilkanPesananBelumDibayar'])->name('pembayaran');
     Route::post('butki/{id}', [CartController::class, 'kirimBuktiPembayaran'])->name('bukti');

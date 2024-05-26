@@ -63,7 +63,7 @@ class PemesananController extends Controller
             $order->total = $total;
             $order->save();
 
-            return view('catalog');
+            return redirect()->route('pemesanan', ['id' => $produk->id_produk])->with('success', 'Product added to cart successfully');
         } else {
             return redirect()->back()->with('error', 'Failed to find order for user');
         }

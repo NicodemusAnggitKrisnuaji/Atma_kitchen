@@ -37,7 +37,7 @@ Situs Atma Kitchen
             @endphp
 
             @forelse ($produk as $item)
-            @if ($item->kategori == 'Cakes')
+            @if ($item->kategori == 'Cake')
             <div class="col-12 col-md-3">
                 <div class="card mb-4">
                     <a href="{{ url('pemesanan', $item->id_produk) }}">

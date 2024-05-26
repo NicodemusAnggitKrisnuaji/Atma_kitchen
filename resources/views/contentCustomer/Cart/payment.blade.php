@@ -125,10 +125,16 @@
                                 @if($order->status == 'belum dibayar')
                                 <form action="{{ url('butki/'.$order->id_pemesanan) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
-                                    <div class="form-group">
-                                        <input type="file" name="bukti" class="form-control">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <div class="form-group mb-0">
+                                                <input type="file" name="bukti" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <button type="submit" class="btn btn-primary">Kirim Bukti</button>
+                                        </div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary mt-2">Kirim Bukti</button>
                                 </form>
                                 @else
                                 Menunggu konfirmasi

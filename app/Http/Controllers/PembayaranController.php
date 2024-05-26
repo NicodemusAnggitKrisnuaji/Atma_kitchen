@@ -9,6 +9,17 @@ use Illuminate\Support\Facades\Validator;
 
 class PembayaranController extends Controller
 {
+    public function index()
+    {
+        $user = Auth::user();
+        $pembayaran = Cart::where('id_cart', $cart->id_cart)->get();
+
+        $cartItems = Cart::whereIn('id_pemesanan', $carts->pluck('id_pemesanan'))
+            ->with('produk')
+            ->get();
+
+        return view('contentCustomer.cart.index', compact('cartItems'));
+    }
     // Menampilkan daftar pesanan yang perlu dibayar untuk pengguna yang sedang login
     public function tampilkanPesananBelumDibayar()
     {
