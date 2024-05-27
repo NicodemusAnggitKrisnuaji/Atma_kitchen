@@ -41,7 +41,10 @@ class PemesananController extends Controller
 
         $produk = Produk::findOrFail($request->id_produk);
 
-        $cek = Pemesanan::where('id_user', $user_id)->first();
+        $cek = Pemesanan::where('id_user', $user_id)
+        ->where('status', 'belum dibayar')
+        ->latest()
+        ->first();
 
         if ($cek) {
             Cart::create([
@@ -71,14 +74,20 @@ class PemesananController extends Controller
 
     public function createPemesanan()
     {
-       $user_id = Auth::id();
+        $user_id = Auth::id();
 
-        $last_order = Pemesanan::where('id_user', $user_id)->latest()->first();
-
-        if ($last_order && $last_order->status !== 'sudah dibayar') {
+        $last_order = Pemesanan::where('id_user', $user_id)
+            ->where('status', 'belum dibayar')
+            ->latest()
+            ->first();
+        
+        if (
+            $last_order && $last_order->status !== 'sudah dibayar' && $last_order->status !== 'pembayaran valid' && $last_order->status !== 'diterima' && $last_order->status !== 'ditolak' && $last_order->status !== 'diproses'
+            && $last_order->status !== 'siap di-pickup' && $last_order->status !== 'sedang dikirim kurir' && $last_order->status !== 'sudah di pickup' && $last_order->status !== 'selesai'
+        ) {
             $order = new Pemesanan();
 
-            if ($order->id_pemesanan === $last_order->id_pemesanan) {
+            if ($order->id_pemesanan !== $last_order->id_pemesanan) {
                 $order->id_user = $user_id;
                 $order->tanggal_pesan = Carbon::now();
                 $order->tanggal_lunas = null;
@@ -307,13 +316,19 @@ class PemesananController extends Controller
         $points = 0;
 
         if ($PemesananTotal >= 1000000) {
-            $points += 200;
-        } elseif ($PemesananTotal >= 500000) {
-            $points += 75;
-        } elseif ($PemesananTotal >= 100000) {
-            $points += 15;
-        } elseif ($PemesananTotal >= 10000) {
-            $points += 1;
+            $points += 200 * floor($PemesananTotal / 1000000);
+            $PemesananTotal %= 1000000;
+        }
+        if ($PemesananTotal >= 500000) {
+            $points += 75 * floor($PemesananTotal / 500000);
+            $PemesananTotal %= 500000;
+        }
+        if ($PemesananTotal >= 100000) {
+            $points += 15 * floor($PemesananTotal / 100000);
+            $PemesananTotal %= 100000;
+        }
+        if ($PemesananTotal >= 10000) {
+            $points += 1 * floor($PemesananTotal / 10000);
         }
 
         $today = Carbon::today();

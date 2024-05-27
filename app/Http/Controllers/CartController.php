@@ -14,11 +14,11 @@ class CartController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $carts = Pemesanan::where('id_user', $user->id)->get();
+        $carts = Pemesanan::where('status', 'belum dibayar')->where('id_user', $user->id)->get();
 
-        // Muat relasi produk bersama dengan item keranjang
+       
         $cartItems = Cart::whereIn('id_pemesanan', $carts->pluck('id_pemesanan'))
-            ->with('produk') // Muat relasi produk
+            ->with('produk')
             ->get();
 
         return view('contentCustomer.Cart.index', compact('cartItems'));
@@ -130,3 +130,4 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Item keranjang berhasil dihapus');
     }
 }
+
