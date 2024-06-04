@@ -125,7 +125,13 @@ class CartController extends Controller
             return redirect()->back()->with('error', 'Item keranjang tidak ditemukan');
         }
 
+        $jumlah = $cartItem->jumlah;
+
         $cartItem->delete();
+
+        $produk = Produk::find($cartItem->id_produk);
+        $produk->stock += $jumlah;
+        $produk->save();
 
         return redirect()->back()->with('success', 'Item keranjang berhasil dihapus');
     }

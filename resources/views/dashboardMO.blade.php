@@ -93,18 +93,21 @@
                                 <p> Konfirmasi Pesanan</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ url('accepted') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-table-list"></i>
+                                <p> Pesanan Diproses</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
-                <!-- /.sidebar-menu -->
             </div>
-            <!-- /.sidebar -->
             <div class="d-flex justify-content-center" style="position: absolute; bottom: 0; width: 100%;">
                 <a href="{{ route('actionLogout') }}" class="btn btn-sm btn-danger">
                     <i class="fa-solid fa-right-from-bracket"></i> Logout
                 </a>
             </div>
         </aside>
-        <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             @yield('content')
         </div>
@@ -123,7 +126,6 @@
                 </div>
             </div>
         </div>
-        <!-- /.content-wrapper -->
     </div>
     <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('plugins/js/bootstrap.bundle.min.js') }}"></script>

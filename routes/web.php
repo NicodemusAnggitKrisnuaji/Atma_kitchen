@@ -20,6 +20,8 @@ use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\DetailProdukController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PoinController;
+use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\TipController;
 use App\Http\Controllers\PengirimanController;
 use Illuminate\Auth\Events\Login;
@@ -118,10 +120,15 @@ Route::middleware(['auth', 'role:Customer'])->group(function () {
 
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('cart.add', [PemesananController::class, 'addToCart'])->name('cart.add');
+    Route::put('update/{id}', [PemesananController::class, 'updateDelivery'])->name('updateDelivery');
     Route::delete('cart.destroy/{id}', [CartController:: class, 'destroy'])->name('cart.destroy');
+
+    Route::put('pointsEarned/{id}', [PoinController::class, 'pointsEarned'])->name('pointsEarned');
 
     Route::get('pembayaran', [CartController::class, 'tampilkanPesananBelumDibayar'])->name('pembayaran');
     Route::post('butki/{id}', [CartController::class, 'kirimBuktiPembayaran'])->name('bukti');
+
+    Route::get('transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
 });
 
 Route::middleware(['auth', 'role:Owner'])->group(function () {
@@ -172,6 +179,9 @@ Route::middleware(['auth', 'role:MO'])->group(function () {
     Route::get('/orders', [PemesananController::class, 'index'])->name('orders.index');
     Route::put('/orders/{id}', [PemesananController::class, 'update'])->name('orders.update');
     Route::get('/orders/material-list', [PemesananController::class, 'showMaterialList'])->name('orders.material-list');
+
+    Route::get('/accepted', [PemesananController::class, 'showAcceptedOrders'])->name('orders.accepted');
+    Route::put('/accepted/{id}', [PemesananController::class, 'updateAcceptedOrders'])->name('orders.acceptedUpdate');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

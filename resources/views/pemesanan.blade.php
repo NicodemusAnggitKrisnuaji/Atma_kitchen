@@ -50,7 +50,7 @@ Situs Atma Kitchen
                             <div class="d-flex align-items-center">
                                 <input type="hidden" id="id_produk" name="id_produk" value="{{ $produk->id_produk }}">
                                 <input type="hidden" id="harga_produk" name="harga_produk" value="{{ $produk->harga_produk }}">
-                                <input type="number" id="jumlah" name="jumlah" class="form-control" value="1" min="1" data-max="{{ $produk->stock }}" style="width: 60px; text-align: center;">
+                                <input type="text" id="jumlah" name="jumlah" class="form-control" value="1" data-max="{{ $produk->stock }}" style="width: 60px; text-align: center;">
                             </div>
                             <small>Stok Tersedia: {{ $produk->stock }}</small>
                         </div>

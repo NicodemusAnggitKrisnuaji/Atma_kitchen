@@ -103,8 +103,8 @@
             </tfoot>
         </table>
         <div class="nota-summary">
-            <p>Poin Dari Pesanan Ini: {{ $pemesanan->poin_dari_pesan }}</p>
-            <p>Total Poin Customer: {{ $pemesanan->user->total_poin }}</p>
+            <p>Poin Dari Pesanan Ini:</p>
+            <p>Total Poin Customer:</p>
         </div>
         <div class="nota-footer">
             <p>Terima Kasih Telah Berbelanja di Atma Kitchen :3</p>

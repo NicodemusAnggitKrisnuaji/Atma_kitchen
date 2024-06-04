@@ -44,13 +44,29 @@ class PemesananController extends Controller
         $cek = Pemesanan::where('id_user', $user_id)->first();
 
         if ($cek) {
-            Cart::create([
-                'jumlah' => $request->jumlah,
-                'id_produk' => $request->id_produk ?? null,
-                'id_pemesanan' => $cek->id_pemesanan,
-                'id_hampers' => $request->id_hampers ?? null,
-                'harga' => $produk->harga_produk
-            ]);
+            $existingCartItem = Cart::where('id_pemesanan', $cek->id_pemesanan)
+                ->where('id_produk', $request->id_produk)
+                ->first();
+
+            if ($existingCartItem) {
+                // Update jumlah dan subtotal
+                $existingCartItem->jumlah += $request->jumlah;
+                $existingCartItem->harga += $produk->harga_produk * $request->jumlah;
+                $existingCartItem->save();
+            } else {
+                // Tambahkan item baru ke cart
+                Cart::create([
+                    'jumlah' => $request->jumlah,
+                    'id_produk' => $request->id_produk ?? null,
+                    'id_pemesanan' => $cek->id_pemesanan,
+                    'id_hampers' => $request->id_hampers ?? null,
+                    'harga' => $produk->harga_produk * $request->jumlah
+                ]);
+            }
+
+            // Kurangi stock produk
+            $produk->stock -= $request->jumlah;
+            $produk->save();
 
             // Hitung total belanjaan
             $cart_items = Cart::where('id_pemesanan', $cek->id_pemesanan)->get();
@@ -68,6 +84,7 @@ class PemesananController extends Controller
             return redirect()->back()->with('error', 'Failed to find order for user');
         }
     }
+
 
     public function createPemesanan()
     {
@@ -108,9 +125,6 @@ class PemesananController extends Controller
         // Kembalikan pesanan yang baru dibuat
         return $order;
     }
-
-
-
 
     public function index(Request $request)
     {
@@ -168,6 +182,21 @@ class PemesananController extends Controller
         $Pemesanan->save();
 
         return redirect()->route('orders.index')->with('success', 'Pemesanan telah diperbarui.');
+    }
+
+    public function updateDelivery(Request $request, $id)
+    {
+        $Pemesanan = Pemesanan::findOrFail($id);
+
+        $request->validate([
+            'jenis_pengiriman' => 'required',
+        ]);
+
+        $Pemesanan->jenis_pengiriman = $request->input('jenis_pengiriman');
+
+        $Pemesanan->save();
+
+        return redirect()->route('cart.index')->with('success', 'Jenis Pengiriman Telah Diperbarui');
     }
 
     public function showMaterialList()
@@ -334,5 +363,55 @@ class PemesananController extends Controller
         $customer = User::findOrFail($customerId);
         $customer->saldo += $amount;
         $customer->save();
+    }
+
+    public function showAcceptedOrders()
+    {
+        $acceptedOrders = Pemesanan::whereIn('status', ['diterima', 'belum dapat diproses'])->paginate(10);
+
+        $cart = [];
+
+        foreach ($acceptedOrders as $pemesanan) {
+            $carts = Cart::where('id_pemesanan', $pemesanan->id_pemesanan)->get();
+            foreach ($carts as $cartItem) {
+                if ($cartItem->id_produk !== null) {
+                    $cart[] = $cartItem->produk->nama_produk;
+                }
+
+                if ($cartItem->id_hampers !== null) {
+                    $cart[] = $cartItem->hampers->nama_hampers;
+                }
+            }
+        }
+
+        return view('viewAdmin.PesananDiProses.index', compact('acceptedOrders', 'cart'));
+    }
+
+    public function updateAcceptedOrders(Request $request, $id)
+    {
+        $Pemesanan = Pemesanan::findOrFail($id);
+
+        $request->validate([
+            'status' => 'required|in:diproses,belum dapat diproses',
+        ]);
+
+        if ($request->input('status') == 'diproses') {
+            $requiredMaterials = $this->checkMaterialsAvailability($Pemesanan->id_pemesanan);
+
+            if (!empty($requiredMaterials)) {
+                session(['requiredMaterials' => $requiredMaterials]);
+                return redirect()->route('orders.material-list')->with('error', 'Bahan baku tidak mencukupi untuk memproses pesanan');
+            } else {
+                $Pemesanan->status = 'diproses';
+                $this->storeCustomerPoints($Pemesanan);
+                $this->reduceMaterialsStock($Pemesanan->id_pemesanan);
+            }
+        } elseif ($request->input('status') == 'belum dapat diproses') {
+            $Pemesanan->status = 'belum dapat diproses';
+        }
+
+        $Pemesanan->save();
+
+        return redirect()->route('orders.accepted')->with('success', 'Pemesanan telah diperbaharui');
     }
 }

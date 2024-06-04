@@ -110,38 +110,15 @@
                 }), 0, ',', '.') }}</p>
             </div>
 
-            <div class="d-flex mt-4 justify-content-center">
-                <div class="form-check me-3">
-                    <input class="form-check-input" type="radio" name="delivery_option" id="delivery_option" value="delivery" checked>
-                    <label class="form-check-label custom-radio" for="delivery_option">
-                        <div class="custom-radio-content">
-                            <i class="fa-solid fa-truck"></i>
-                            <span>Delivery</span>
-                        </div>
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="delivery_option" id="pickup_option" value="pickup">
-                    <label class="form-check-label custom-radio" for="pickup_option">
-                        <div class="custom-radio-content">
-                            <i class="fa-solid fa-store"></i>
-                            <span>Pick Up</span>
-                        </div>
-                    </label>
-                </div>
-            </div>
-
-            <div class="mt-4">
-                <div id="delivery_address" class="d-none">
-                    <label for="address">Delivery Address:</label>
-                    <textarea class="form-control" id="address" rows="3"></textarea>
-                </div>
-
-                <div id="pickup_address" class="d-none">
-                    <label for="pickup_address">Pick Up Address:</label>
-                    <textarea class="form-control" id="pickup_address" rows="3"></textarea>
-                </div>
-            </div>
+            <form action="{{ route('updateDelivery', $cartItem->id_pemesanan) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <select name="jenis_pengiriman" class="form-control select-center" onchange="this.form.submit()">
+                    <option value="" disabled selected>Pilih Jenis Pengiriman</option>
+                    <option value="delivery" {{ $cartItem->jenis_pengiriman == 'delivery' ? 'selected' : '' }}>Delivery</option>
+                    <option value="pickup" {{ $cartItem->jenis_pengiriman == 'pickup' ? 'selected' : '' }}>Pickup</option>
+                </select>
+            </form>
 
             <div class="mt-4">
                 <a href="{{ url('catalog') }}" style="color: black;">Continue to Shopping &gt;</a>
@@ -155,8 +132,8 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
-                        <p>Order Subtotal:</p>
-                        <p class="h5 ms-2">Rp {{ number_format($cartItems->sum(function($cartItem) {
+                        <p><strong>Total</strong></p>
+                        <p class="h5 ms-2"><strong>Rp {{ number_format($cartItems->sum(function($cartItem) {
                             if ($cartItem->produk) {
                                 return $cartItem->produk->harga_produk * $cartItem->jumlah;
                             } elseif ($cartItem->hampers) {
@@ -164,59 +141,11 @@
                             } else {
                                 return 0;
                             }
-                        }), 0, ',', '.') }}</p>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <p>Delivery Fee:</p>
-                        <p>Rp 50.000</p>
-                    </div>
-                    @php
-                        $points = 0;
-                        $total = $cartItems->sum(function($cartItem) {
-                            if ($cartItem->produk) {
-                                return $cartItem->produk->harga_produk * $cartItem->jumlah;
-                            } elseif ($cartItem->hampers) {
-                                return $cartItem->hampers->harga * $cartItem->jumlah;
-                            } else {
-                                return 0;
-                            }
-                        }) + 50000;
-
-                        if ($total >= 1000000) {
-                            $points += 200;
-                        } elseif ($total >= 500000) {
-                            $points += 75;
-                        } elseif ($total >= 100000) {
-                            $points += 15;
-                        } elseif ($total >= 10000) {
-                            $points += 1;
-                        }
-
-                        $today = \Carbon\Carbon::today();
-                        $customer = \Auth::user();
-                        $birthday = \Carbon\Carbon::parse($customer->tanggal_lahir)->setYear($today->year);
-                        $birthdayStart = $birthday->copy()->subDays(3);
-                        $birthdayEnd = $birthday->copy()->addDays(3);
-
-                        if ($today->between($birthdayStart, $birthdayEnd)) {
-                            $points *= 2;
-                        }
-                    @endphp
-                    <div class="d-flex justify-content-between">
-                        <p><strong>Total:</strong></p>
-                        <p><strong>Rp {{ number_format($cartItems->sum(function($cartItem) {
-                            if ($cartItem->produk) {
-                                return $cartItem->produk->harga_produk * $cartItem->jumlah;
-                            } elseif ($cartItem->hampers) {
-                                return $cartItem->hampers->harga * $cartItem->jumlah;
-                            } else {
-                                return 0;
-                            }
-                        }) + 50000, 0, ',', '.') }}</strong></p>
+                        }), 0, ',', '.') }}</strong></p>
                     </div>
                     <div class="d-flex justify-content-between border-bottom">
                         <p>Point Yang Didapat:</p>
-                        <p>{{ $points }}</p>
+                        <p></p>
                     </div>
                 </div>
                 <div class="card-header">
@@ -244,7 +173,7 @@
                                 } else {
                                     return 0;
                                 }
-                            }) + 50000; // Ganti 50000 dengan biaya pengiriman jika sesuai
+                            }); // Ganti 50000 dengan biaya pengiriman jika sesuai
                             $totalSetelahPotong = $total; // Inisialisasi nilai total setelah dipotong
                         @endphp
                         <p id="totalSetelahPotong">Rp {{ number_format($totalSetelahPotong, 0, ',', '.') }}</p>
@@ -253,60 +182,12 @@
                 <div class="mt-4 text-center">
                     <a href="{{ route('pembayaran') }}" class="btn btn-primary btn-block" style="margin-bottom: 10px; margin-left: 55px; background-color: #FCC0C0; color: black; width: 250px;">Continue to Payment</a>
                 </div>
+
+                <div class="mt-4 text-center">
+                    <a href="{{ route('payment') }}" class="btn btn-primary btn-block" style="margin-bottom: 10px; margin-left: 55px; background-color: #FCC0C0; color: black; width: 250px;">Cetak Bukti Transaksi</a>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    $(document).ready(function() {
-        $('input[name="delivery_option"]').change(function() {
-            if ($(this).val() === 'delivery') {
-                $('#delivery_address').removeClass('d-none');
-                $('#pickup_address').addClass('d-none');
-            } else {
-                $('#delivery_address').addClass('d-none');
-                $('#pickup_address').removeClass('d-none');
-            }
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const deliveryOption = document.getElementById('delivery_option');
-        const pickupOption = document.getElementById('pickup_option');
-
-        function disableOtherOption() {
-            if (this.checked) {
-                if (this.id === 'delivery_option') {
-                    pickupOption.disabled = true;
-                } else if (this.id === 'pickup_option') {
-                    deliveryOption.disabled = true;
-                }
-            }
-        }
-
-        function enableOtherOption() {
-            if (this.id === 'delivery_option') {
-                pickupOption.disabled = false;
-            } else if (this.id === 'pickup_option') {
-                deliveryOption.disabled = false;
-            }
-        }
-
-        deliveryOption.addEventListener('change', disableOtherOption);
-        deliveryOption.addEventListener('change', enableOtherOption);
-
-        pickupOption.addEventListener('change', disableOtherOption);
-        pickupOption.addEventListener('change', enableOtherOption);
-    });
-
-    function updateTotal(poinTukar) {
-        poinTukar = parseInt(poinTukar) || 0;
-        var total = <?php echo $total; ?>;
-        var totalSetelahPotong = total - (poinTukar * 100);
-        totalSetelahPotong = Math.max(0, totalSetelahPotong); // Pastikan total tidak kurang dari 0
-        document.getElementById('totalSetelahPotong').innerText = "Rp " + totalSetelahPotong.toLocaleString();
-    }
-</script>
-
 @endsection
