@@ -16,10 +16,9 @@ class LoginApiController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $role = $user->role;
 
             $user = User::where('email', $credentials['email'])->first();
+            $role = $user->role;
 
             if (in_array($role, ['Customer', 'MO'])) {
                 return response()->json([
@@ -49,43 +48,5 @@ class LoginApiController extends Controller
         Auth::logout();
         return response()->json(['message' => 'Logout Successful']);
     }
-
-    public function forgotPassword(Request $request)
-    {
-        $request->validate(['email' => 'required|email']);
-
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
-
-        return $status === Password::RESET_LINK_SENT
-            ? response()->json(['message' => 'Password reset link sent'])
-            : response()->json(['error' => $status], 400);
-    }
-
-    public function resetPassword(Request $request)
-    {
-        $request->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
-        ]);
-
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function (User $user, string $password) {
-                $user->forceFill([
-                    'password' => Hash::make($password)
-                ])->setRememberToken(Str::random(60));
-
-                $user->save();
-
-                // event(new PasswordReset($user)); // Uncomment this line if you have defined PasswordReset event
-            }
-        );
-
-        return $status === Password::PASSWORD_RESET
-            ? response()->json(['message' => 'Password has been reset successfully'])
-            : response()->json(['error' => $status], 400);
-    }
+    
 }

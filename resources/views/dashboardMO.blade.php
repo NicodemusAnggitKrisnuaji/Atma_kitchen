@@ -93,12 +93,30 @@
                                 <p> Konfirmasi Pesanan</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ url('PresensiDanGaji') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-comments-dollar"></i>
+                                <p> Laporan Presensi Dan Gaji</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('PemasukanDanPengeluaran') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-comments-dollar"></i>
+                                <p> Laporan Pemasukan Dan Pengeluaran</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('PenitipRecap') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-comments-dollar"></i>
+                                <p> Laporan Penitip</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
             </div>
             <!-- /.sidebar -->
-            <div class="d-flex justify-content-center" style="position: absolute; bottom: 0; width: 100%;">
+            <div class="d-flex justify-content-center" style="position: absolute; bottom: 0; width: 100%; margin_top: 10px;">
                 <a href="{{ route('actionLogout') }}" class="btn btn-sm btn-danger">
                     <i class="fa-solid fa-right-from-bracket"></i> Logout
                 </a>

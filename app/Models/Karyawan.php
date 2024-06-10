@@ -18,4 +18,9 @@ class Karyawan extends Model
         'honor_harian',
         'bonus_rajin',
     ];
+
+    public function presensi()
+    {
+        return $this->hasMany(Presensi::class, 'id_karyawan');
+    }
 }

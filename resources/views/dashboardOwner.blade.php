@@ -69,6 +69,24 @@
                                 <p> Gaji Karyawan</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ url('PresensiDanGajiOwner') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-comments-dollar"></i>
+                                <p> Laporan Presensi Dan Gaji</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('PemasukanDanPengeluaranOwner') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-comments-dollar"></i>
+                                <p> Laporan Pemasukan Dan Pengeluaran</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('PenitipRecapOwner') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-comments-dollar"></i>
+                                <p> Laporan Penitip</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->

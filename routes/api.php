@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
@@ -10,6 +9,7 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Http\Controllers\api\LoginController;
 use App\Http\Controllers\LoginApiController;
+use App\Http\Controllers\SaldoCustomerApiController;
 use Spatie\FlareClient\Api;
 
 /*
@@ -23,14 +23,12 @@ use Spatie\FlareClient\Api;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
+// Route untuk login
 Route::post('/login', [LoginApiController::class, 'login']);
 
-Route::post('/forgotPassword', [LoginApiController::class, 'forgotPassword']);
-Route::get('/reset-password/{token}', function (string $token) {
-    return response()->json(['token' => $token]);
-})->middleware('guest')->name('password.reset');
-Route::post('/resetPassword', [LoginApiController::class, 'resetPassword']);
+// Route untuk tarik saldo
+Route::post('/tarik-saldo/{id}', [SaldoCustomerApiController::class, 'tarikSaldo']);
+
+
+// Route untuk riwayat penarikan saldo
+Route::get('/withdrawal-history/{id}', [SaldoCustomerApiController::class, 'withdrawalHistory']);

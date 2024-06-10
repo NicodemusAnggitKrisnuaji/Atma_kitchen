@@ -20,6 +20,8 @@ use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\DetailProdukController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\KonfirmasiSaldoController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\TipController;
 use App\Http\Controllers\PengirimanController;
 use Illuminate\Auth\Events\Login;
@@ -122,6 +124,7 @@ Route::middleware(['auth', 'role:Customer'])->group(function () {
 
     Route::get('pembayaran', [CartController::class, 'tampilkanPesananBelumDibayar'])->name('pembayaran');
     Route::post('butki/{id}', [CartController::class, 'kirimBuktiPembayaran'])->name('bukti');
+    
 });
 
 Route::middleware(['auth', 'role:Owner'])->group(function () {
@@ -129,10 +132,17 @@ Route::middleware(['auth', 'role:Owner'])->group(function () {
     Route::get('profile/editProfileOwner/{id}', [ProfileController::class, 'editProfileOwner'])->name('editProfileOwner');
     Route::put('profile/updateProfileOwner/{id}', [ProfileController::class, 'updateProfileOwner'])->name('updateProfileOwner');
 
-
     Route::get('gaji.edit/{id}', [GajiBonusController::class, 'edit'])->name('gaji.edit');
     Route::get('gaji', [GajiBonusController::class, 'index'])->name('gaji');
     Route::put('gaji.update/{id}', [GajiBonusController::class, 'update'])->name('gaji.update');
+
+    Route::get('PresensiDanGajiOwner', [LaporanController::class, 'PresensiDanGajiOwner'])->name('PresensiDanGajiOwner');
+    Route::get('download-pdf', [LaporanController::class, 'downloadPdf'])->name('download_pdf');
+
+    Route::get('PemasukanDanPengeluaranOwner', [LaporanController::class, 'PemasukanDanPengeluaranOwner'])->name('PemasukanDanPengeluaranOwner');
+    Route::get('download-pdf', [LaporanController::class, 'downloadPdf'])->name('download_pdf');
+
+    Route::get('PenitipRecapOwner', [LaporanController::class, 'PenitipRecapOwner'])->name('PenitipRecapOwner');
 });
 
 Route::middleware(['auth', 'role:MO'])->group(function () {
@@ -172,6 +182,17 @@ Route::middleware(['auth', 'role:MO'])->group(function () {
     Route::get('/orders', [PemesananController::class, 'index'])->name('orders.index');
     Route::put('/orders/{id}', [PemesananController::class, 'update'])->name('orders.update');
     Route::get('/orders/material-list', [PemesananController::class, 'showMaterialList'])->name('orders.material-list');
+
+    Route::put('status/{id}', [CartController::class, 'updateStatus'])->name('status');
+
+    Route::get('PresensiDanGaji', [LaporanController::class, 'PresensiDanGaji'])->name('PresensiDanGaji');
+    Route::get('download-pdf', [LaporanController::class, 'downloadPdf'])->name('download_pdf');
+
+    Route::get('PemasukanDanPengeluaran', [LaporanController::class, 'PemasukanDanPengeluaran'])->name('PemasukanDanPengeluaran');
+    Route::get('download-pdf', [LaporanController::class, 'downloadPdf'])->name('download_pdf');
+
+    Route::get('PenitipRecap', [LaporanController::class, 'PenitipRecap'])->name('PenitipRecap');
+
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -234,6 +255,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('tip.create', [TipController::class, 'create'])->name('tip.create');
     Route::post('tip.store', [TipController::class, 'store'])->name('tip.store');
     Route::get('tip', [TipController::class, 'index'])->name('tip');
+
+    Route::get('PenarikanSaldo', [KonfirmasiSaldoController::class, 'PenarikanSaldo'])->name('PenarikanSaldo');
+    Route::put('ConfirmTransfer/{id}', [KonfirmasiSaldoController::class, 'ConfirmTransfer'])->name('ConfirmTransfer');
 });
 
 Route::get('logout', [LoginController::class, 'actionLogout'])->name('actionLogout')->middleware('auth');

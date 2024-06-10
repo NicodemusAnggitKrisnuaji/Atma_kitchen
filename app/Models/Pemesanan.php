@@ -23,6 +23,11 @@ class Pemesanan extends Model
         'status',
         'bukti',
         'total',
+        'jarak',
+        'total_jarak',
+        'tip',
+        'total_tip',
+        'total_keseluruhan',
     ];
 
     public function user()

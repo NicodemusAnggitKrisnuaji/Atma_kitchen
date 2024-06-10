@@ -16,7 +16,7 @@ class CartController extends Controller
         $user = Auth::user();
         $carts = Pemesanan::where('status', 'belum dibayar')->where('id_user', $user->id)->get();
 
-       
+
         $cartItems = Cart::whereIn('id_pemesanan', $carts->pluck('id_pemesanan'))
             ->with('produk')
             ->get();
@@ -46,6 +46,7 @@ class CartController extends Controller
         return view('contentCustomer.Cart.payment', compact('Pemesanans', 'cart'));
     }
 
+    
     public function kirimBuktiPembayaran($id, Request $request)
     {
         $Pemesanan = Pemesanan::findOrFail($id);
@@ -130,4 +131,3 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Item keranjang berhasil dihapus');
     }
 }
-

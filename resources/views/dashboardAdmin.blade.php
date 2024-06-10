@@ -101,6 +101,12 @@
                                 <p> Konfirmasi Pembayaran</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ url('PenarikanSaldo') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <p> Konfirmasi Penarikan Saldo</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>
