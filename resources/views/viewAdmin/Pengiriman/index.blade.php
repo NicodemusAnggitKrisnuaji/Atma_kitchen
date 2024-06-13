@@ -33,7 +33,6 @@
                             </div>
                         @endif
 
-                        <a href="{{ route('pengiriman.create') }}" class="btn btn-md btn-success mb-4">Tambah Jarak Pengiriman</a>
                         <div class="table-responsive p-0">
                             <table class="table table-hover text-no-wrap">
                                 <thead>
@@ -41,6 +40,7 @@
                                         <th class="text-center">Data Pemesanan</th>
                                         <th class="text-center">Jarak</th>
                                         <th class="text-center">Total</th>
+                                        <th class="text-center">Jenis Pengiriman</th>
                                         <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
@@ -55,6 +55,9 @@
                                         </td>
                                         <td class="text-center">
                                             {{$item->total }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{$item->jenis_pengiriman}}
                                         </td>
                                         <td class="text-center">
                                             <a href="{{ route('pengiriman.edit', $item->id_pengiriman) }}" class="btn btn-sm btn-primary">Edit</a>

@@ -14,12 +14,13 @@ class PengirimanController extends Controller
      * index
      *
      * @return void
-     * 
      */
 
     public function index() {
-        $query = Pengiriman::query();
-        $pengiriman = $query->orderBy('id_pengiriman', 'DESC')->paginate(5);
+        // Mengambil data pengiriman yang hanya memiliki jenis pengiriman 'diantar' di tabel pemesanan
+        $pengiriman = Pengiriman::whereHas('pemesanan', function($query) {
+            $query->where('jenis_pengiriman', 'diantar');
+        })->orderBy('id_pengiriman', 'DESC')->paginate(5);
 
         return view('viewAdmin.Pengiriman.index', compact('pengiriman'));
     }
@@ -104,3 +105,5 @@ class PengirimanController extends Controller
         return redirect()->route('pengiriman')->with(['success' => 'Jarak Berhasil Dihapus!']);
     }
 }
+
+

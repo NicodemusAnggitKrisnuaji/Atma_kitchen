@@ -10,6 +10,7 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Http\Controllers\api\LoginController;
 use App\Http\Controllers\LoginApiController;
+use App\Http\Controllers\ProdukController;
 use Spatie\FlareClient\Api;
 
 /*
@@ -34,3 +35,7 @@ Route::get('/reset-password/{token}', function (string $token) {
     return response()->json(['token' => $token]);
 })->middleware('guest')->name('password.reset');
 Route::post('/resetPassword', [LoginApiController::class, 'resetPassword']);
+
+Route::get('produk', [App\Http\Controllers\ProdukController::class, 'index']);
+Route::post('produk', [App\Http\Controllers\ProdukController::class, 'store']);
+Route::get('produk', [App\Http\Controllers\ProdukController::class, 'show']);

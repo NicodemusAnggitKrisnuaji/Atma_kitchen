@@ -88,9 +88,9 @@ Profile: {{ Auth::user()->nama }}
                 <table class="table table-striped text-center">
                     <tr>
                         <td style="background-color: brown; color: white;">No</td>
-                        <td style="background-color: brown; color: white;">Nama Produk</td>
-                        <td style="background-color: brown; color: white;">Tanggal</td>
-                        <td style="background-color: brown; color: white;">Harga</td>
+                        <td style="background-color: brown; color: white;">ID Pesanan</td>
+                        <td style="background-color: brown; color: white;">Produk</td>
+                        <td style="background-color: brown; color: white;">Total Harga</td>
                         <td style="background-color: brown; color: white;">Status</td>
                     </tr>
                     @php

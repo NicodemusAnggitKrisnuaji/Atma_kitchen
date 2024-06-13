@@ -101,6 +101,18 @@
                                 <p> Konfirmasi Pembayaran</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ url('status') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-pen"></i>
+                                <p> Update Status Pengiriman</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('pembatalan') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-xmark"></i>
+                                <p> Pembatalan Pesanan</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>

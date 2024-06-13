@@ -22,6 +22,7 @@ use App\Http\Controllers\DetailProdukController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\TipController;
 use App\Http\Controllers\PengirimanController;
+use App\Http\Controllers\LaporanController;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -122,6 +123,9 @@ Route::middleware(['auth', 'role:Customer'])->group(function () {
 
     Route::get('pembayaran', [CartController::class, 'tampilkanPesananBelumDibayar'])->name('pembayaran');
     Route::post('butki/{id}', [CartController::class, 'kirimBuktiPembayaran'])->name('bukti');
+
+    Route::get('penerimaan', [PemesananController::class, 'showCompletedOrders'])->name('orders.status');
+    Route::put('penerimaan/{id}', [PemesananController::class, 'updateCompletedOrders'])->name('orders.updateCompletedOrders');
 });
 
 Route::middleware(['auth', 'role:Owner'])->group(function () {
@@ -133,6 +137,15 @@ Route::middleware(['auth', 'role:Owner'])->group(function () {
     Route::get('gaji.edit/{id}', [GajiBonusController::class, 'edit'])->name('gaji.edit');
     Route::get('gaji', [GajiBonusController::class, 'index'])->name('gaji');
     Route::put('gaji.update/{id}', [GajiBonusController::class, 'update'])->name('gaji.update');
+
+    Route::get('laporan', [LaporanController::class, 'cetakForm'])->name('laporan');
+    Route::get('laporan/cetakLaporanTabel/{tahun}', [LaporanController::class, 'cetakLaporanPenjualanPertahun'])->name('cetakLaporanPenjualanPertahun');
+    Route::get('laporan/cetakLaporanForm', [LaporanController::class, 'cetakForm'])->name('cetakLaporanForm');
+
+    Route::get('laporanBahanBaku', [LaporanController::class, 'cetakFormBahanBaku'])->name('laporanBahanBaku');
+    Route::get('laporanBahanBaku/cetakLaporanBahanBakuTabel/{tglawal}/{tglakhir}', [LaporanController::class, 'cetakLaporanBahanBaku'])->name('cetakLaporanBahanBaku');
+    Route::get('laporanBahanBaku/cetakLaporanBahanBakuForm', [LaporanController::class, 'cetakFormBahanBaku'])->name('cetakLaporanBahanBakuForm');
+
 });
 
 Route::middleware(['auth', 'role:MO'])->group(function () {
@@ -172,6 +185,14 @@ Route::middleware(['auth', 'role:MO'])->group(function () {
     Route::get('/orders', [PemesananController::class, 'index'])->name('orders.index');
     Route::put('/orders/{id}', [PemesananController::class, 'update'])->name('orders.update');
     Route::get('/orders/material-list', [PemesananController::class, 'showMaterialList'])->name('orders.material-list');
+
+    Route::get('laporanMO', [LaporanController::class, 'cetakFormMO'])->name('laporanMO');
+    Route::get('laporan/cetakLaporanTabelMO/{tahun}', [LaporanController::class, 'cetakLaporanPenjualanPertahunMO'])->name('cetakLaporanPenjualanPertahunMO');
+    Route::get('laporan/cetakLaporanFormMO', [LaporanController::class, 'cetakFormMO'])->name('cetakLaporanFormMO');
+
+    Route::get('laporanBahanBakuMO', [LaporanController::class, 'cetakFormBahanBakuMO'])->name('laporanBahanBakuMO');
+    Route::get('laporanBahanBaku/cetakLaporanBahanBakuTabelMO/{tglawal}/{tglakhir}', [LaporanController::class, 'cetakLaporanBahanBakuMO'])->name('cetakLaporanBahanBakuMO');
+    Route::get('laporanBahanBaku/cetakLaporanBahanBakuFormMO', [LaporanController::class, 'cetakFormBahanBakuMO'])->name('cetakLaporanBahanBakuFormMO');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -234,6 +255,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('tip.create', [TipController::class, 'create'])->name('tip.create');
     Route::post('tip.store', [TipController::class, 'store'])->name('tip.store');
     Route::get('tip', [TipController::class, 'index'])->name('tip');
+
+    Route::get('status', [PemesananController::class, 'statusIndex'])->name('orders.status');
+    Route::put('/status/{id}', [PemesananController::class, 'statusUpdate'])->name('orders.statusUpdate');
+
+    Route::get('pembatalan', [PemesananController::class, 'latePaymentsIndex'])->name('orders.pembatalan');
+    Route::put('/pembatalan/{id}', [PemesananController::class, 'latePaymentsUpdate'])->name('orders.latePaymentsUpdate');
 });
 
 Route::get('logout', [LoginController::class, 'actionLogout'])->name('actionLogout')->middleware('auth');

@@ -122,6 +122,26 @@ class ProdukController extends Controller
         return redirect()->route('produk.index')->with(['success' => 'Pesanan berhasil']);
     }
 
+    public function show()
+    {
+        try {
+            $produk = Produk::all();
+
+            if(!$produk) throw new \Exception("Produk Tidak Ditemukan");
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Produk berhasil ditemukan',
+                'data' => $produk
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 404);
+        }
+    }
 
     /**
      * edit

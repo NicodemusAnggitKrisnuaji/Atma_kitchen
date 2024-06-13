@@ -2,23 +2,21 @@
 @section('content')
 
 <div class="content-header">
-    <div class="container-fluid"> <div class="row mb-2"> <div class="col-sm-6">
-        <h1 class="m-0">Konfirmasi Pembayaran</h1>
-    </div>
-
-    <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item">
-                <a href="#">Konfirmasi Pembayaran</a>
-            </li>
-        <li class="breadcrumb-item active">Create</li>
-        </ol>
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Konfirmasi Pembayaran</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item">
+                        <a href="#">Konfirmasi Pembayaran</a>
+                    </li>
+                    <li class="breadcrumb-item active">Create</li>
+                </ol>
+            </div>
         </div>
-    
-        </div>
-        
     </div>
-
 </div>
 
 <div class="content">
@@ -29,8 +27,6 @@
                     <div class="card-body">
                         <form action="{{ route('tip.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            <div class="form-row">
-                            </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label class="font-weight-bold">Total Pembayaran</label>
@@ -68,10 +64,10 @@
                                 <div class="form-group col-md-6">
                                     <label class="font-weight-bold">Status</label>
                                     <select name="status" class="form-control @error('status') is-invalid @enderror">
-                                    <option value="pembayaran valid" {{ $p->status == 'sudah dibayar' ? 'selected' : '' }} disabled>Sudah Dibayar</option>
-                                    <option value="pembayaran valid" {{ $p->status == 'pembayaran valid' ? 'selected' : '' }}>Pembayaran Valid</option>
+                                    <option value="sudah dibayar" {{ old('status') == 'sudah dibayar' ? 'selected' : '' }} disabled>Sudah Dibayar</option>
+                                    <option value="pembayaran valid" {{ old('status') == 'pembayaran valid' ? 'selected' : '' }}>Pembayaran Valid</option>
                                     </select>
-                                    @error('id_pemesanan')
+                                    @error('status')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>

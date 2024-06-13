@@ -69,6 +69,18 @@
                                 <p> Gaji Karyawan</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ url('laporan') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-file"></i>
+                                <p> Cetak Laporan Penjualan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('laporanBahanBaku') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-file"></i>
+                                <p> Cetak Laporan Penggunaan Bahan Baku</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->

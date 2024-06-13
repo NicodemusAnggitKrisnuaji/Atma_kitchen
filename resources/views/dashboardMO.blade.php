@@ -93,6 +93,18 @@
                                 <p> Konfirmasi Pesanan</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ url('laporanMO') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-file"></i>
+                                <p> Cetak Laporan Penjualan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('laporanBahanBakuMO') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-file"></i>
+                                <p> Cetak Laporan Penggunaan Bahan Baku</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->

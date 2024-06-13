@@ -28,6 +28,7 @@ class Pemesanan extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
+        return $this->hasMany(Pengiriman::class, 'id_pemesanan', 'id_pemesanan');
     }
-
+    
 }

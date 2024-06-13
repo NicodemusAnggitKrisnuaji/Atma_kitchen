@@ -118,8 +118,149 @@ class PemesananController extends Controller
         return $order;
     }
 
+    public function statusIndex(Request $request)
+    {
+        // Menggunakan whereIn untuk memfilter berdasarkan beberapa status
+        $statusIndex = Pemesanan::whereIn('status', [
+            'diproses', 
+            'siap di-pickup', 
+        ])->paginate(10);
 
+        // Mengambil detail cart untuk setiap pemesanan
+        $cart = [];
 
+        foreach ($statusIndex as $pemesanan) {
+            $carts = Cart::where('id_pemesanan', $pemesanan->id_pemesanan)->get();
+            foreach ($carts as $cartItem) {
+                if ($cartItem->id_produk !== null) {
+                    $cart[] = $cartItem->produk->nama_produk;
+                }
+
+                if ($cartItem->id_hampers !== null) {
+                    $cart[] = $cartItem->hampers->nama_hampers;
+                }
+            }
+        }
+
+        return view('viewAdmin.status.index', compact('statusIndex', 'cart'));
+    }
+
+    public function statusUpdate(Request $request, $id)
+    {
+        $Pemesanan = Pemesanan::findOrFail($id);
+
+        $request->validate([
+            'status' => 'required|in:siap di-pickup,sedang dikirim kurir,sudah di pickup,diambil sendiri',
+        ]);
+
+        // Set nilai status dari request langsung
+        $statusBaru = $request->input('status');
+
+        // Jika statusnya diambil sendiri, ubah menjadi selesai
+        if ($statusBaru === 'diambil sendiri') {
+            $statusBaru = 'selesai';
+        }
+
+        $Pemesanan->status = $statusBaru;
+
+        $Pemesanan->save();
+
+        return redirect()->back()->with('success', 'Pemesanan telah diperbarui.');
+    }
+
+    
+
+    public function showCompletedOrders() {
+        // Dapatkan ID pengguna yang sedang login
+        $user_id = Auth::id();
+    
+        // Menggunakan metode whereIn untuk memilih status yang sesuai
+        $showCompletedOrders = Pemesanan::where('id_user', $user_id)
+            ->whereIn('status', ['sudah di pickup', 'sedang dikirim kurir'])
+            ->paginate(10); // Menggunakan paginate untuk membatasi jumlah pesanan per halaman
+    
+        $cart = [];
+    
+        foreach ($showCompletedOrders as $pemesanan) {
+            $carts = Cart::where('id_pemesanan', $pemesanan->id_pemesanan)->get();
+            foreach ($carts as $cartItem) {
+                if ($cartItem->id_produk !== null) {
+                    $cart[] = $cartItem->produk->nama_produk;
+                }
+    
+                if ($cartItem->id_hampers !== null) {
+                    $cart[] = $cartItem->hampers->nama_hampers;
+                }
+            }
+        }
+    
+        // Mengembalikan data pesanan beserta cart-nya ke view
+        return view('contentCustomer.penerimaan', compact('showCompletedOrders', 'cart'));
+    }
+
+    public function updateCompletedOrders(Request $request, $id)
+    {
+        // Dapatkan ID pengguna yang sedang login
+        $user_id = Auth::id();
+        
+        // Temukan pesanan berdasarkan ID-nya
+        $Pemesanan = Pemesanan::where('id_pemesanan', $id)
+                            ->where('id_user', $user_id)
+                            ->firstOrFail();
+
+        // Validasi permintaan
+        $request->validate([
+            'status' => 'required',
+        ]);
+
+        // Ubah status pesanan menjadi 'selesai'
+        $Pemesanan->status = 'selesai';
+
+        // Simpan perubahan status pesanan
+        $Pemesanan->save();
+
+        return redirect()->back();
+    }
+
+    public function latePaymentsIndex(Request $request)
+    {
+        $latePayments = Pemesanan::where('status', 'telat bayar')->paginate(10);
+
+        $cart = [];
+
+        foreach ($latePayments as $pemesanan) {
+            $carts = Cart::where('id_pemesanan', $pemesanan->id_pemesanan)->get();
+            foreach ($carts as $cartItem) {
+                if ($cartItem->id_produk !== null) {
+                    $cart[] = $cartItem->produk->nama_produk;
+                }
+
+                if ($cartItem->id_hampers !== null) {
+                    $cart[] = $cartItem->hampers->nama_hampers;
+                }
+            }
+        }
+
+        return view('viewAdmin.pembatalan.index', compact('latePayments', 'cart'));
+    }
+
+    public function latePaymentsUpdate(Request $request, $id)
+    {
+        $Pemesanan = Pemesanan::findOrFail($id);
+
+        $request->validate([
+            'status' => 'required',
+        ]);
+
+        if ($request->input('status') == 'batal') {
+            $Pemesanan->status = 'batal';
+            $this->restoreStock($Pemesanan->id_pemesanan);
+        }
+
+        $Pemesanan->save();
+
+        return redirect()->route('orders.pembatalan')->with('success', 'Pemesanan telah diperbarui.');
+    }
 
     public function index(Request $request)
     {
@@ -349,5 +490,20 @@ class PemesananController extends Controller
         $customer = User::findOrFail($customerId);
         $customer->saldo += $amount;
         $customer->save();
+    }
+
+    public function storeMaterialUsage($materialUsage, $Pemesanan)
+    {
+        foreach ($materialUsage as $materialName => $usedAmount) {
+            $material = bahanBaku::where('nama', $materialName)->first();
+
+            if ($material) {
+                PenggunaanBahanBaku::create([
+                    'id_bahanBaku' => $material->id_bahanBaku,
+                    'jumlah' => $usedAmount,
+                    'id_pemesanan' => $Pemesanan->id_pemesanan, 
+                ]);
+            }
+        }
     }
 }
