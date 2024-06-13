@@ -26,9 +26,7 @@
 
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-        <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light" style="background-color: #C19191;">
-            <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button">
@@ -36,7 +34,6 @@
                     </a>
                 </li>
             </ul>
-            <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a class="nav-link" data-widget="fullscreen" href="#" role="button">
@@ -45,42 +42,46 @@
                 </li>
             </ul>
         </nav>
-        <!-- /.navbar -->
-        <!-- Main Sidebar Container -->
         <aside class="main-sidebar custom-sidebar elevation-10">
-            <!-- Brand Logo -->
             <a href="#" class="brand-link d-flex justify-content-center">
                 <img src="{{ asset('img/logo.png') }}" width="200" height="200" alt="AtmaKitchen Logo">
             </a>
-            <!-- Sidebar -->
             <div class="sidebar">
-                <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <li class="nav-item">
                             <a href="{{ url('profileOwner') }}" class="nav-link" style="color: white;">
-                                <i class="fa-solid fa-basket-shopping"></i>
+                                <i class="bi bi-basket"></i>
                                 <p>Profile Owner</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ url('gaji') }}" class="nav-link" style="color: white;">
-                                <i class="fa-solid fa-user"></i>
+                                <i class="bi bi-person"></i>
                                 <p> Gaji Karyawan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('laporanOwner') }}" class="nav-link" style="color:white;">
+                                <i class="bi bi-file"></i>
+                                <p> Laporan Penjualan Bulanan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('laporanStokBahanBaku') }}" class="nav-link" style="color:white;">
+                                <i class="bi bi-file"></i>
+                                <p> Laporan Stok Bahan Baku</p>
                             </a>
                         </li>
                     </ul>
                 </nav>
-                <!-- /.sidebar-menu -->
             </div>
             <div class="d-flex justify-content-center" style="position: absolute; bottom: 0; width: 100%;">
                 <a href="{{ route('actionLogout') }}" class="btn btn-sm btn-danger">
-                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    <i class="bi bi-box-arrow-right"></i> Logout
                 </a>
             </div>
-            <!-- /.sidebar -->
         </aside>
-        <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             @yield('content')
         </div>
@@ -99,15 +100,9 @@
                 </div>
             </div>
         </div>
-        <!-- /.content-wrapper -->
     </div>
-    <!-- ./wrapper -->
-    <!-- REQUIRED SCRIPTS -->
-    <!-- jQuery -->
     <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
-    <!-- Bootstrap 4 -->
     <script src="{{ asset('plugins/js/bootstrap.bundle.min.js') }}"></script>
-    <!-- AdminLTE App -->
     <script src="{{ asset('js/adminlte.min.js') }}"></script>
 
 </body>

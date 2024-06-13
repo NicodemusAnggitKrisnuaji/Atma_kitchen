@@ -1,6 +1,13 @@
 @extends('dashboardMO')
 @section('content')
 
+<style>
+    .select-center {
+        text-align: center;
+        text-align-last: center;
+    }
+</style>
+
 <div class="content-header">
     <div class="contianer-fluid">
         <div class="row mb-2">

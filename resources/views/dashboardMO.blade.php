@@ -53,22 +53,21 @@
                 <img src="{{ asset('img/logo.png') }}" width="200" height="200" alt="AtmaKitchen Logo">
             </a>
             <!-- Sidebar -->
-            <div class="sidebar">
-                <!-- Sidebar Menu -->
+            <div class="sidebar" style="max-height: calc(100vh - 200px); overflow-y: auto;">
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a href="{{ url('profileMO') }}" class="nav-link" style="color: white;">
                                 <i class="fa-solid fa-basket-shopping"></i>
                                 <p>Profile MO</p>
                             </a>
-                        </li>
-                        <li class="nav-item">
+                        </li> -->
+                        <!-- <li class="nav-item">
                             <a href="{{ url('karyawan') }}" class="nav-link" style="color: white;">
                                 <i class="fa-solid fa-user"></i>
                                 <p> Karyawan</p>
                             </a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a href="{{ url('penitip') }}" class="nav-link" style="color: white;">
                                 <i class="fa-solid fa-box"></i>
@@ -97,6 +96,24 @@
                             <a href="{{ url('accepted') }}" class="nav-link" style="color: white;">
                                 <i class="fa-solid fa-table-list"></i>
                                 <p> Pesanan Diproses</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('material.usage') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-table-list"></i>
+                                <p> Bahan Baku Digunakan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('laporanMO') }}" class="nav-link" style="color:white;">
+                                <i class="fa-solid fa-file"></i>
+                                <p> Laporan Penjualan Bulanan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('laporanStokBahanBakuMO') }}" class="nav-link" style="color:white;">
+                                <i class="bi bi-file"></i>
+                                <p> Laporan Stok Bahan Baku</p>
                             </a>
                         </li>
                     </ul>

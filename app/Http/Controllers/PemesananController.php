@@ -12,6 +12,7 @@ use App\Models\Resep;
 use App\Models\Produk;
 use App\Models\Hampers;
 use App\Models\User;
+use App\Models\PenggunaanBahanBaku;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -173,10 +174,12 @@ class PemesananController extends Controller
             } else {
                 $this->reduceMaterialsStock($Pemesanan->id_pemesanan);
             }
+
         } elseif ($request->input('status') == 'ditolak') {
             $Pemesanan->status = 'ditolak';
             $this->restoreStock($Pemesanan->id_pemesanan);
             $this->refundCustomer($Pemesanan->id_user, $Pemesanan->total);
+            $this->restoreMaterialsStock($Pemesanan->id_pemesanan);
         }
 
         $Pemesanan->save();
@@ -201,6 +204,7 @@ class PemesananController extends Controller
 
     public function showMaterialList()
     {
+
         $requiredMaterials = session('requiredMaterials', []);
 
         return view('viewAdmin.konfirmasiMO.material_list', compact('requiredMaterials'));
@@ -306,6 +310,54 @@ class PemesananController extends Controller
         }
     }
 
+    private function restoreMaterialsStock($orderId)
+    {
+        $carts = Cart::where('id_pemesanan', $orderId)->get();
+
+        foreach ($carts as $cartItem) {
+            if ($cartItem->id_produk !== null) {
+                $item = Produk::find($cartItem->id_produk);
+
+                if ($item) {
+                    $resep = Resep::where('id_produk', $item->id_produk)->first();
+
+                    if ($resep) {
+                        $detail_reseps = Detail_reseps::where('id_resep', $resep->id_resep)->get();
+
+                        foreach ($detail_reseps as $detail) {
+                            $material = BahanBaku::find($detail->id_bahanBaku);
+                            $requiredAmount = $detail->jumlah * $cartItem->jumlah;
+
+                            if ($material) {
+                                $material->stock += $requiredAmount;
+                                $material->save();
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ($cartItem->id_hampers !== null) {
+                $item = Hampers::find($cartItem->id_hampers);
+
+                if ($item) {
+                    $detail_hampers = Detail_hampers::where('id_hampers', $item->id_hampers)->get();
+
+                    foreach ($detail_hampers as $detail) {
+                        $material = BahanBaku::find($detail->id_bahanBaku);
+                        $requiredAmount = $detail->jumlah * $cartItem->jumlah;
+
+                        if ($material) {
+                            $material->stock += $requiredAmount;
+                            $material->save();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     private function restoreStock($id)
     {
         $carts = Cart::where('id_pemesanan', $id)->get();
@@ -400,18 +452,101 @@ class PemesananController extends Controller
 
             if (!empty($requiredMaterials)) {
                 session(['requiredMaterials' => $requiredMaterials]);
-                return redirect()->route('orders.material-list')->with('error', 'Bahan baku tidak mencukupi untuk memproses pesanan');
+                return redirect()->route('orders.material-list');
+                return redirect()->route('orders.accepted')->with('error', 'Bahan baku tidak mencukupi untuk memproses pesanan');
             } else {
                 $Pemesanan->status = 'diproses';
                 $this->storeCustomerPoints($Pemesanan);
                 $this->reduceMaterialsStock($Pemesanan->id_pemesanan);
+
+                $this->storeMaterialUsage($requiredMaterials, $Pemesanan);
             }
         } elseif ($request->input('status') == 'belum dapat diproses') {
             $Pemesanan->status = 'belum dapat diproses';
+            $this->restoreStock($Pemesanan->id_pemesanan);
+            $this->refundCustomer($Pemesanan->id_user, $Pemesanan->total);
+            $this->restoreMaterialsStock($Pemesanan->id_pemesanan);
         }
 
         $Pemesanan->save();
 
         return redirect()->route('orders.accepted')->with('success', 'Pemesanan telah diperbaharui');
+    }
+
+    public function showMaterialUsage()
+    {
+        $processesOrders = Pemesanan::where('status', 'diproses')->get();
+        $materialUsage = [];
+
+        foreach ($processesOrders as $order) {
+            $carts = Cart::where('id_pemesanan', $order->id_pemesanan)->get();
+
+            foreach ($carts as $cartItem) {
+                if ($cartItem->id_produk !== null) {
+                    $product = Produk::find($cartItem->id_produk);
+
+                    if ($product) {
+                        $resep = Resep::where('id_produk', $product->id_produk)->first();
+
+                        if ($resep) {
+                            $detail_reseps = Detail_reseps::where('id_resep', $resep->id_resep)->get();
+
+                            foreach ($detail_reseps as $detail) {
+                                $material = bahanBaku::find($detail->id_bahanBaku);
+                                $requiredAmount = $detail->jumlah * $cartItem->jumlah;
+
+                                if (array_key_exists($material->nama, $materialUsage)) {
+                                    $materialUsage[$material->nama] += $requiredAmount;
+                                } else {
+                                    $materialUsage[$material->nama] = $requiredAmount;
+                                }
+
+                                $material->stock -= $requiredAmount;
+                                $material->save();
+                            }
+                        }
+                    }
+                }
+
+                if ($cartItem->id_hampers !== null) {
+                    $hampers = Hampers::find($cartItem->id_hampers);
+
+                    if ($hampers) {
+                        $detail_hampers = Detail_hampers::where('id_hampers', $hampers->id_hampers)->get();
+
+                        foreach ($detail_hampers as $detail) {
+                            $material = bahanBaku::find($detail->id_bahanBaku);
+                            $requiredAmount = $detail->jumlah * $cartItem->jumlah;
+
+                            if (array_key_exists($material->nama, $materialUsage)) {
+                                $materialUsage[$material->nama] += $requiredAmount;
+                            } else {
+                                $materialUsage[$material->nama] = $requiredAmount;
+                            }
+
+                            $material->stock -= $requiredAmount;
+                            $material->save();
+                        }
+                    }
+                }
+            }
+        }
+
+        return view('viewAdmin.PemakaianBahanBaku.index', compact('materialUsage'));
+    }
+
+    public function storeMaterialUsage($materialUsage, $Pemesanan)
+    {
+        foreach ($materialUsage as $materialName => $usedAmount) {
+            $material = bahanBaku::where('nama', $materialName)->first();
+
+            if ($material) {
+                PenggunaanBahanBaku::create([
+                    'id_bahanBaku' => $material->id_bahanBaku,
+                    'jumlah' => $usedAmount,
+                    'id_pemesanan' => $Pemesanan->id_pemesanan, 
+                ]);
+            }
+        }
     }
 }

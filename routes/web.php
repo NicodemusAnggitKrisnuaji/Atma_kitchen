@@ -24,6 +24,8 @@ use App\Http\Controllers\PoinController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\TipController;
 use App\Http\Controllers\PengirimanController;
+use App\Http\Controllers\PencatatanBahanBakuController;
+use App\Http\Controllers\LaporanController;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -140,6 +142,13 @@ Route::middleware(['auth', 'role:Owner'])->group(function () {
     Route::get('gaji.edit/{id}', [GajiBonusController::class, 'edit'])->name('gaji.edit');
     Route::get('gaji', [GajiBonusController::class, 'index'])->name('gaji');
     Route::put('gaji.update/{id}', [GajiBonusController::class, 'update'])->name('gaji.update');
+
+    Route::get('laporanOwner', [LaporanController::class, 'cetakLaporanBulananOwner'])->name('laporanOwner');
+    Route::get('/laporan/penjualan-bulanan', [LaporanController::class, 'LaporanPenjualanBulananPerProdukOwner'])->name('laporan.penjualan-bulanan');
+    Route::get('/laporan/generate-pdf', [LaporanController::class, 'generatePDFLaporanPenjualanOwner'])->name('laporan.generate-pdf');
+
+    Route::get('laporanStokBahanBaku', [LaporanController::class, 'cetakLaporanStokBahanBakuOwner'])->name('laporanStokBahanBaku');
+    Route::get('laporanStokBahanBaku-pdf', [LaporanController::class, 'generatePDFLaporanStokBahanBakuOwner'])->name('generatePDFLaporanStokBahanBaku');
 });
 
 Route::middleware(['auth', 'role:MO'])->group(function () {
@@ -182,6 +191,15 @@ Route::middleware(['auth', 'role:MO'])->group(function () {
 
     Route::get('/accepted', [PemesananController::class, 'showAcceptedOrders'])->name('orders.accepted');
     Route::put('/accepted/{id}', [PemesananController::class, 'updateAcceptedOrders'])->name('orders.acceptedUpdate');
+
+    Route::get('/material.usage', [PemesananController::class, 'showMaterialUsage'])->name('material.usage');
+
+    Route::get('laporanMO', [LaporanController::class, 'cetakLaporanBulananMO'])->name('laporanMO');
+    Route::get('/laporan/penjualan-bulananMO', [LaporanController::class, 'LaporanPenjualanBulananPerProdukMO'])->name('laporan.penjualan-bulananMO');
+    Route::get('/laporan/generate-pdfMO', [LaporanController::class, 'generatePDFLaporanPenjualanMO'])->name('laporan.generate-pdfMO');
+
+    Route::get('laporanStokBahanBakuMO', [LaporanController::class, 'cetakLaporanStokBahanBakuMO'])->name('laporanStokBahanBakuMO');
+    Route::get('laporanStokBahanBaku-pdfMO', [LaporanController::class, 'generatePDFLaporanStokBahanBakuMO'])->name('generatePDFLaporanStokBahanBakuMO');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
