@@ -306,7 +306,7 @@ class LaporanController extends Controller
                         }
 
                         $salesReport[$product->nama_produk]['jumlah_terjual'] += $item->jumlah;
-                        $salesReport[$product->nama_produk]['total_pendapatan'] += $item->jumlah * $product->harga_produk;
+                        $salesReport[$product->harga_produk]['total_pendapatan'] += $item->jumlah * $product->harga_produk;
                     }
                 }
             }

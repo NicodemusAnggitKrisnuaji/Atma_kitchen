@@ -32,7 +32,7 @@
     <h2>Atma Kitchen</h2>
     <p>Jl. Centralpark No. 10 Yogyakarta</p>
     <h3>LAPORAN Presensi Karyawan</h3>
-    <form method="GET" action="{{ route('PresensiDanGaji') }}">
+    <form method="GET" action="{{ route('PresensiDanGajiOwner') }}">
         <label for="bulan">Bulan: </label>
         <select id="bulan" name="bulan">
             @for ($m = 1; $m <= 12; $m++)
@@ -71,20 +71,19 @@
         @foreach($employees as $employee)
         @php
         // Menghitung jumlah hadir dan jumlah bolos untuk setiap karyawan
-        $cekhadir = $employee->presensi->where('status', 'Hadir')->count();
-        $cekbolos = $employee->presensi->where('status', 'Bolos')->count();
+        $hadir = $employee->presensi->where('status', 'Hadir')->count();
+        $bolos = $employee->presensi->where('status', 'Bolos')->count();
 
         // Menghitung total honor harian
-        $honorHarian = $cekhadir * $employee->honor_harian;
+        $honorHarian = $hadir * $employee->honor_harian;
 
-        // Menghitung bonus rajin   
+        // Menghitung bonus rajin
         $bonusRajin = $employee->bonus_rajin ;
-       
-       
+
         $total = $honorHarian + $bonusRajin;
 
-        $totalHadir += $cekhadir;
-        $totalBolos += $cekbolos;
+        $totalHadir += $hadir;
+        $totalBolos += $bolos;
         $totalGaji += $total;
         @endphp
 

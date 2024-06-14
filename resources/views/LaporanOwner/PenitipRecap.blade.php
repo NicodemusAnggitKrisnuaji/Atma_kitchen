@@ -38,7 +38,7 @@
     <p>Jl. Centralpark No. 10 Yogyakarta</p>
     <br>
     <h3>LAPORAN TRANSAKSI PENITIP</h3>
-    <form method="GET" action="{{ route('PenitipRecap') }}">
+    <form method="GET" action="{{ route('PenitipRecapOwner') }}">
         <label for="bulan">Bulan: </label>
         <select id="bulan" name="month">
             @for ($m = 1; $m <= 12; $m++)

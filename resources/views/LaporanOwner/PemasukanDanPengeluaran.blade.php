@@ -33,7 +33,7 @@
     <p>Jl. Centralpark No. 10 Yogyakarta</p>
     <br>
     <h3>LAPORAN PEMASUKAN DAN PENGELUARAN</h3>
-    <form method="GET" action="{{ route('PemasukanDanPengeluaran') }}">
+    <form method="GET" action="{{ route('PemasukanDanPengeluaranOwner') }}">
         <label for="bulan">Bulan: </label>
         <select id="bulan" name="month">
             @for ($m = 1; $m <= 12; $m++) <option value="{{ $m }}" {{ $m == $month ? 'selected' : '' }}>{{ \Carbon\Carbon::create()->month($m)->format('F') }}</option>
