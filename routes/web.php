@@ -124,6 +124,9 @@ Route::middleware(['auth', 'role:Customer'])->group(function () {
 
     Route::get('pembayaran', [CartController::class, 'tampilkanPesananBelumDibayar'])->name('pembayaran');
     Route::post('butki/{id}', [CartController::class, 'kirimBuktiPembayaran'])->name('bukti');
+
+    Route::get('penerimaan', [PemesananController::class, 'showCompletedOrders'])->name('orders.status');
+    Route::put('penerimaan/{id}', [PemesananController::class, 'updateCompletedOrders'])->name('orders.updateCompletedOrders');
     
 });
 
@@ -143,6 +146,21 @@ Route::middleware(['auth', 'role:Owner'])->group(function () {
     Route::get('download-pdf', [LaporanController::class, 'downloadPdf'])->name('download_pdf');
 
     Route::get('PenitipRecapOwner', [LaporanController::class, 'PenitipRecapOwner'])->name('PenitipRecapOwner');
+
+    Route::get('laporanOwner', [LaporanController::class, 'cetakLaporanBulananOwner'])->name('laporanOwner');
+    Route::get('/laporan/penjualan-bulanan', [LaporanController::class, 'LaporanPenjualanBulananPerProdukOwner'])->name('laporan.penjualan-bulanan');
+    Route::get('/laporan/generate-pdf', [LaporanController::class, 'generatePDFLaporanPenjualanOwner'])->name('laporan.generate-pdf');
+
+    Route::get('laporanStokBahanBaku', [LaporanController::class, 'cetakLaporanStokBahanBakuOwner'])->name('laporanStokBahanBaku');
+    Route::get('laporanStokBahanBaku-pdf', [LaporanController::class, 'generatePDFLaporanStokBahanBakuOwner'])->name('generatePDFLaporanStokBahanBaku');
+
+    Route::get('laporan', [LaporanController::class, 'cetakForm'])->name('laporan');
+    Route::get('laporan/cetakLaporanTabel/{tahun}', [LaporanController::class, 'cetakLaporanPenjualanPertahun'])->name('cetakLaporanPenjualanPertahun');
+    Route::get('laporan/cetakLaporanForm', [LaporanController::class, 'cetakForm'])->name('cetakLaporanForm');
+
+    Route::get('laporanBahanBaku', [LaporanController::class, 'cetakFormBahanBaku'])->name('laporanBahanBaku');
+    Route::get('laporanBahanBaku/cetakLaporanBahanBakuTabel/{tglawal}/{tglakhir}', [LaporanController::class, 'cetakLaporanBahanBaku'])->name('cetakLaporanBahanBaku');
+    Route::get('laporanBahanBaku/cetakLaporanBahanBakuForm', [LaporanController::class, 'cetakFormBahanBaku'])->name('cetakLaporanBahanBakuForm');
 });
 
 Route::middleware(['auth', 'role:MO'])->group(function () {
@@ -192,6 +210,26 @@ Route::middleware(['auth', 'role:MO'])->group(function () {
     Route::get('download-pdf', [LaporanController::class, 'downloadPdf'])->name('download_pdf');
 
     Route::get('PenitipRecap', [LaporanController::class, 'PenitipRecap'])->name('PenitipRecap');
+
+    Route::get('/accepted', [PemesananController::class, 'showAcceptedOrders'])->name('orders.accepted');
+    Route::put('/accepted/{id}', [PemesananController::class, 'updateAcceptedOrders'])->name('orders.acceptedUpdate');
+
+    Route::get('/material.usage', [PemesananController::class, 'showMaterialUsage'])->name('material.usage');
+
+    Route::get('laporanMO', [LaporanController::class, 'cetakLaporanBulananMO'])->name('laporanMO');
+    Route::get('/laporan/penjualan-bulananMO', [LaporanController::class, 'LaporanPenjualanBulananPerProdukMO'])->name('laporan.penjualan-bulananMO');
+    Route::get('/laporan/generate-pdfMO', [LaporanController::class, 'generatePDFLaporanPenjualanMO'])->name('laporan.generate-pdfMO');
+
+    Route::get('laporanStokBahanBakuMO', [LaporanController::class, 'cetakLaporanStokBahanBakuMO'])->name('laporanStokBahanBakuMO');
+    Route::get('laporanStokBahanBaku-pdfMO', [LaporanController::class, 'generatePDFLaporanStokBahanBakuMO'])->name('generatePDFLaporanStokBahanBakuMO');
+
+    Route::get('laporanMO', [LaporanController::class, 'cetakFormMO'])->name('laporanMO');
+    Route::get('laporan/cetakLaporanTabelMO/{tahun}', [LaporanController::class, 'cetakLaporanPenjualanPertahunMO'])->name('cetakLaporanPenjualanPertahunMO');
+    Route::get('laporan/cetakLaporanFormMO', [LaporanController::class, 'cetakFormMO'])->name('cetakLaporanFormMO');
+
+    Route::get('laporanBahanBakuMO', [LaporanController::class, 'cetakFormBahanBakuMO'])->name('laporanBahanBakuMO');
+    Route::get('laporanBahanBaku/cetakLaporanBahanBakuTabelMO/{tglawal}/{tglakhir}', [LaporanController::class, 'cetakLaporanBahanBakuMO'])->name('cetakLaporanBahanBakuMO');
+    Route::get('laporanBahanBaku/cetakLaporanBahanBakuFormMO', [LaporanController::class, 'cetakFormBahanBakuMO'])->name('cetakLaporanBahanBakuFormMO');
 
 });
 
@@ -258,6 +296,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('PenarikanSaldo', [KonfirmasiSaldoController::class, 'PenarikanSaldo'])->name('PenarikanSaldo');
     Route::put('ConfirmTransfer/{id}', [KonfirmasiSaldoController::class, 'ConfirmTransfer'])->name('ConfirmTransfer');
+
+    Route::get('status', [PemesananController::class, 'statusIndex'])->name('orders.status');
+    Route::put('/status/{id}', [PemesananController::class, 'statusUpdate'])->name('orders.statusUpdate');
+
+    Route::get('pembatalan', [PemesananController::class, 'latePaymentsIndex'])->name('orders.pembatalan');
+    Route::put('/pembatalan/{id}', [PemesananController::class, 'latePaymentsUpdate'])->name('orders.latePaymentsUpdate');
 });
 
 Route::get('logout', [LoginController::class, 'actionLogout'])->name('actionLogout')->middleware('auth');

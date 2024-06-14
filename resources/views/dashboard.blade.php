@@ -138,7 +138,7 @@
                         <a class="nav-link" href="{{ url('catalog') }}" style="font-size: 20px;">Catalog</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" style="font-size: 20px;">Delivery</a>
+                        <a class="nav-link" href="{{ url ('penerimaan') }}" style="font-size: 20px;">Status</a>
                     </li>
                 </ul>
                 <div class="nav-icons">

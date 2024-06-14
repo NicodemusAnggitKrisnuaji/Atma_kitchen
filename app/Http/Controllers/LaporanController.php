@@ -8,6 +8,11 @@ use App\Models\Cart;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Produk;
+use App\Models\Pemesanan;
+use App\Models\bahanBaku;
+use App\Models\PenggunaanBahanBaku;
+use Dompdf\Dompdf;
 
 class LaporanController extends Controller
 {
@@ -271,6 +276,309 @@ class LaporanController extends Controller
         }
     
         return view('LaporanOwner.PenitipRecap', compact('recap', 'month', 'year'));
+    }
+
+    public function LaporanPenjualanBulananPerProdukOwner(Request $request) 
+    {
+        $year = $request->input('year');
+        $month = $request->input('month');
+
+        $completedOrders = Pemesanan::whereYear('tanggal_lunas', $year)
+            ->whereMonth('tanggal_lunas', $month)
+            ->where('status', 'selesai')
+            ->get();
+
+        $salesReport = [];
+
+        foreach ($completedOrders as $order) {
+            $cartItems = Cart::where('id_pemesanan', $order->id_pemesanan)->get();
+
+            foreach ($cartItems as $item) {
+                if ($item->id_produk !== null) {
+                    $product = Produk::find($item->id_produk);
+
+                    if ($product) {
+                        if (!isset($salesReport[$product->nama_produk])) {
+                            $salesReport[$product->nama_produk] = [
+                                'jumlah_terjual' => 0,
+                                'total_pendapatan' => 0,
+                            ];
+                        }
+
+                        $salesReport[$product->nama_produk]['jumlah_terjual'] += $item->jumlah;
+                        $salesReport[$product->nama_produk]['total_pendapatan'] += $item->jumlah * $product->harga_produk;
+                    }
+                }
+            }
+        }
+
+        uasort($salesReport, function($a, $b) {
+            return $b['jumlah_terjual'] <=> $a['jumlah_terjual'];
+        });
+
+        return view('viewAdmin.LaporanPenjualanBulananPerProdukOwner.form', compact('salesReport', 'month', 'year'));
+    }
+
+
+    public function LaporanPenjualanBulananPerProdukMO(Request $request) 
+    {
+        $month = $request->input('month');
+        $year = $request->input('year');
+
+        $completedOrders = Pemesanan::whereYear('tanggal_lunas', $year)
+            ->whereMonth('tanggal_lunas', $month)
+            ->where('status', 'selesai')
+            ->get();
+
+        $salesReport = [];
+
+        foreach ($completedOrders as $order) {
+            $cartItems = Cart::where('id_pemesanan', $order->id_pemesanan)->get();
+
+            foreach ($cartItems as $item) {
+                if ($item->id_produk !== null) {
+                    $product = Produk::find($item->id_produk);
+
+                    if ($product) {
+                        if (!isset($salesReport[$product->nama_produk])) {
+                            $salesReport[$product->nama_produk] = [
+                                'jumlah_terjual' => 0,
+                                'total_pendapatan' => 0,
+                            ];
+                        }
+
+                        $salesReport[$product->nama_produk]['jumlah_terjual'] += $item->jumlah;
+                        $salesReport[$product->nama_produk]['total_pendapatan'] += $item->jumlah * $product->harga_produk;
+                    }
+                }
+            }
+        }
+
+        uasort($salesReport, function($a, $b) {
+            return $b['jumlah_terjual'] <=> $a['jumlah_terjual'];
+        });
+
+        return view('viewAdmin.LaporanPenjualanBulananPerProdukMO.form', compact('salesReport', 'month', 'year'));
+    }
+
+    public function cetakLaporanBulananOwner()
+    {
+        return view('viewAdmin.LaporanPenjualanBulananPerProdukOwner.inputBulan');
+    }
+
+    public function cetakLaporanBulananMO()
+    {
+        return view('viewAdmin.LaporanPenjualanBulananPerProdukMO.inputBulan');
+    }
+
+    public function generatePDFLaporanPenjualanOwner(Request $request)
+    {
+        $month = $request->input('bulan');
+        $year = $request->input('tahun');
+
+        $completedOrders = Pemesanan::whereYear('tanggal_lunas', $year)
+            ->whereMonth('tanggal_lunas', $month)
+            ->where('status', 'selesai')
+            ->get();
+
+        $salesReport = [];
+
+        foreach ($completedOrders as $order) {
+            $cartItems = Cart::where('id_pemesanan', $order->id_pemesanan)->get();
+
+            foreach ($cartItems as $item) {
+                if ($item->id_produk !== null) {
+                    $product = Produk::find($item->id_produk);
+
+                    if ($product) {
+                        if (!isset($salesReport[$product->nama_produk])) {
+                            $salesReport[$product->nama_produk] = [
+                                'jumlah_terjual' => 0,
+                                'total_pendapatan' => 0,
+                            ];
+                        }
+
+                        $salesReport[$product->nama_produk]['jumlah_terjual'] += $item->jumlah;
+                        $salesReport[$product->nama_produk]['total_pendapatan'] += $item->jumlah * $product->harga_produk;
+                    }
+                }
+            }
+        }
+
+        uasort($salesReport, function($a, $b) {
+            return $b['jumlah_terjual'] <=> $a['jumlah_terjual'];
+        });
+
+        $pdf = new Dompdf();
+        $pdf->loadHtml(view('viewAdmin.LaporanPenjualanBulananPerProdukOwner.pdf', compact('salesReport', 'month', 'year')));
+
+        $pdf->setPaper('A4', 'landscape');
+
+        $pdf->render();
+
+        return $pdf->stream('laporan_penjualan_bulanan.pdf');
+    }
+
+    public function generatePDFLaporanPenjualanMO(Request $request)
+    {
+        $month = $request->input('bulan');
+        $year = $request->input('tahun');
+
+        $completedOrders = Pemesanan::whereYear('tanggal_lunas', $year)
+            ->whereMonth('tanggal_lunas', $month)
+            ->where('status', 'selesai')
+            ->get();
+
+        $salesReport = [];
+
+        foreach ($completedOrders as $order) {
+            $cartItems = Cart::where('id_pemesanan', $order->id_pemesanan)->get();
+
+            foreach ($cartItems as $item) {
+                if ($item->id_produk !== null) {
+                    $product = Produk::find($item->id_produk);
+
+                    if ($product) {
+                        if (!isset($salesReport[$product->nama_produk])) {
+                            $salesReport[$product->nama_produk] = [
+                                'jumlah_terjual' => 0,
+                                'total_pendapatan' => 0,
+                            ];
+                        }
+
+                        $salesReport[$product->nama_produk]['jumlah_terjual'] += $item->jumlah;
+                        $salesReport[$product->nama_produk]['total_pendapatan'] += $item->jumlah * $product->harga_produk;
+                    }
+                }
+            }
+        }
+
+        uasort($salesReport, function($a, $b) {
+            return $b['jumlah_terjual'] <=> $a['jumlah_terjual'];
+        });
+
+        $pdf = new Dompdf();
+        $pdf->loadHtml(view('viewAdmin.LaporanPenjualanBulananPerProdukMO.pdf', compact('salesReport', 'month', 'year')));
+
+        $pdf->setPaper('A4', 'landscape');
+
+        $pdf->render();
+
+        return $pdf->stream('laporan_penjualan_bulanan.pdf');
+    }
+
+    public function cetakLaporanStokBahanBakuOwner()
+    {
+        $bahanBakus = bahanBaku::all();
+
+        return view('viewAdmin.LaporanStokBahanBakuOwner.form', compact('bahanBakus'));
+    }
+
+    public function generatePDFLaporanStokBahanBakuOwner()
+    {
+        $tanggalCetak = Carbon::now()->format('d F Y');
+        $bahanBakus = bahanBaku::all();
+
+        $pdf = new Dompdf();
+        $pdf->loadHtml(view('viewAdmin.LaporanStokBahanBakuOwner.pdf', compact('bahanBakus', 'tanggalCetak')));
+
+        $pdf->setPaper('A4', 'landscape');
+
+        $pdf->render();
+
+        return $pdf->stream('laporan_stok_bahan_baku.pdf');
+    }
+
+    public function cetakLaporanStokBahanBakuMO()
+    {
+        $bahanBakus = bahanBaku::all();
+
+        return view('viewAdmin.LaporanStokBahanBakuMO.form', compact('bahanBakus'));
+    }
+
+    public function generatePDFLaporanStokBahanBakuMO()
+    {
+        $tanggalCetak = Carbon::now()->format('d F Y');
+        $bahanBakus = bahanBaku::all();
+
+        $pdf = new Dompdf();
+        $pdf->loadHtml(view('viewAdmin.LaporanStokBahanBakuMO.pdf', compact('bahanBakus', 'tanggalCetak')));
+
+        $pdf->setPaper('A4', 'landscape');
+
+        $pdf->render();
+
+        return $pdf->stream('laporan_stok_bahan_baku.pdf');
+    }
+
+    public function cetakLaporanPenjualanPertahun($tahun)
+    {
+        // Mengambil data berdasarkan bulan dan tahun
+        $cetakTahun = Pemesanan::select(
+            DB::raw('MONTH(tanggal_lunas) as bulan'),
+            DB::raw('COUNT(*) as jumlah_transaksi'),
+            DB::raw('SUM(total_keseluruhan) as total_uang')
+        )
+        ->whereYear('tanggal_lunas', $tahun)
+        ->groupBy(DB::raw('MONTH(tanggal_lunas)'))
+        ->orderBy(DB::raw('MONTH(tanggal_lunas)'))
+        ->get();
+
+        return view('viewAdmin.Laporan.cetakLaporanTabel', compact('cetakTahun', 'tahun'));
+    }
+
+    public function cetakLaporanPenjualanPertahunMO($tahun)
+    {
+        // Mengambil data berdasarkan bulan dan tahun
+        $cetakTahun = Pemesanan::select(
+            DB::raw('MONTH(tanggal_lunas) as bulan'),
+            DB::raw('COUNT(*) as jumlah_transaksi'),
+            DB::raw('SUM(total_keseluruhan) as total_uang')
+        )
+        ->whereYear('tanggal_lunas', $tahun)
+        ->groupBy(DB::raw('MONTH(tanggal_lunas)'))
+        ->orderBy(DB::raw('MONTH(tanggal_lunas)'))
+        ->get();
+
+        return view('viewAdmin.LaporanMO.cetakLaporanTabelMO', compact('cetakTahun', 'tahun'));
+    }
+
+    public function cetakLaporanBahanBaku($tglawal, $tglakhir)
+    {
+        $cetakPeriode = PenggunaanBahanBaku::whereBetween('tanggal_penggunaan', [$tglawal, $tglakhir])
+                        ->latest()
+                        ->get();
+        
+        return view('viewAdmin.Laporan.cetakLaporanBahanBakuTabel', compact('cetakPeriode', 'tglawal', 'tglakhir'));
+    }
+
+    public function cetakLaporanBahanBakuMO($tglawal, $tglakhir)
+    {
+        $cetakPeriode = PenggunaanBahanBaku::whereBetween('tanggal_penggunaan', [$tglawal, $tglakhir])
+                        ->latest()
+                        ->get();
+        
+        return view('viewAdmin.LaporanMO.cetakLaporanBahanBakuTabelMO', compact('cetakPeriode', 'tglawal', 'tglakhir'));
+    }
+
+    public function cetakForm()
+    {
+        return view('viewAdmin.Laporan.cetakLaporanForm');
+    }
+
+    public function cetakFormMO()
+    {
+        return view('viewAdmin.LaporanMO.cetakLaporanFormMO');
+    }
+
+    public function cetakFormBahanBaku()
+    {
+        return view('viewAdmin.Laporan.cetakLaporanBahanBakuForm');
+    }
+
+    public function cetakFormBahanBakuMO()
+    {
+        return view('viewAdmin.LaporanMO.cetakLaporanBahanBakuFormMO');
     }
     
 }

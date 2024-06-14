@@ -71,18 +71,20 @@
         @foreach($employees as $employee)
         @php
         // Menghitung jumlah hadir dan jumlah bolos untuk setiap karyawan
-        $hadir = $employee->presensi->where('status', 'Hadir')->count();
-        $bolos = $employee->presensi->where('status', 'Bolos')->count();
+        $cekhadir = $employee->presensi->where('status', 'Hadir')->count();
+        $cekbolos = $employee->presensi->where('status', 'Bolos')->count();
 
         // Menghitung total honor harian
-        $honorHarian = $hadir * $employee->honor_harian;
+        $honorHarian = $cekhadir * $employee->honor_harian;
 
         // Menghitung bonus rajin   
         $bonusRajin = $employee->bonus_rajin ;
+       
+       
         $total = $honorHarian + $bonusRajin;
 
-        $totalHadir += $hadir;
-        $totalBolos += $bolos;
+        $totalHadir += $cekhadir;
+        $totalBolos += $cekbolos;
         $totalGaji += $total;
         @endphp
 

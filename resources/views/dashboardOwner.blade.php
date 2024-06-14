@@ -39,8 +39,8 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                        <i class="fas fa-expand-arrows-alt"></i>
+                    <a href="{{ route('actionLogout') }}" class="btn btn-sm btn-danger">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
                     </a>
                 </li>
             </ul>
@@ -87,22 +87,42 @@
                                 <p> Laporan Penitip</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ url('laporanOwner') }}" class="nav-link" style="color:white;">
+                                <i class="fa-solid fa-file"></i>
+                                <p> Laporan Penjualan Bulanan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('laporanStokBahanBaku') }}" class="nav-link" style="color:white;">
+                                <i class="fa-solid fa-file"></i>
+                                <p> Laporan Stok Bahan Baku</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('laporan') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-file"></i>
+                                <p> Cetak Laporan Penjualan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('laporanBahanBaku') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-file"></i>
+                                <p> Cetak Laporan Penggunaan Bahan Baku</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
             </div>
-            <div class="d-flex justify-content-center" style="position: absolute; bottom: 0; width: 100%;">
-                <a href="{{ route('actionLogout') }}" class="btn btn-sm btn-danger">
-                    <i class="fa-solid fa-right-from-bracket"></i> Logout
-                </a>
-            </div>
+
             <!-- /.sidebar -->
         </aside>
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             @yield('content')
         </div>
-
+        <br>
         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-sm">
                 <div class="modal-content">

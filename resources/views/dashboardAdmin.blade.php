@@ -35,8 +35,8 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                        <i class="fa-solid fa-expand"></i>
+                    <a href="{{ route('actionLogout') }}" class="btn btn-sm btn-danger">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
                     </a>
                 </li>
             </ul>
@@ -94,7 +94,7 @@
                                 <i class="fa-solid fa-people-arrows"></i>
                                 <p> Input Jarak Pengiriman</p>
                             </a>
-                        </li> 
+                        </li>
                         <li class="nav-item">
                             <a href="{{ url('tip') }}" class="nav-link" style="color: white;">
                                 <i class="fa-solid fa-circle-check"></i>
@@ -107,19 +107,26 @@
                                 <p> Konfirmasi Penarikan Saldo</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ url('status') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-pen"></i>
+                                <p> Update Status Pengiriman</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('pembatalan') }}" class="nav-link" style="color: white;">
+                                <i class="fa-solid fa-xmark"></i>
+                                <p> Pembatalan Pesanan</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
-            </div>
-            <div class="d-flex justify-content-center" style="position: absolute; bottom: 0; width: 100%;">
-                <a href="{{ route('actionLogout') }}" class="btn btn-sm btn-danger">
-                    <i class="fa-solid fa-right-from-bracket"></i> Logout
-                </a>
             </div>
         </aside>
         <div class="content-wrapper">
             @yield('content')
         </div>
-
+        <br>
         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-sm">
                 <div class="modal-content">
